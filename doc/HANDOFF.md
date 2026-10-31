@@ -21,7 +21,7 @@ now enforced by a gate, not by convention. Kernel and ksud are still untouched b
 
 | Item | Value |
 | :--- | :--- |
-| Baseline | `51c21786` (v3.3.1-32), recorded as `upstream_base` in `doc/PRUNING.md` — a value, not a branch |
+| Baseline | `b1fce49e` (v3.3.1-34), recorded as `upstream_base` in `doc/PRUNING.md` — a value, not a branch |
 | Ledger | F1–F5, [entries/](entries/); F5 is the current UI shape |
 | Branches | `dev` = where work lands; `main` = landing line — verified batches are **squashed onto it**, so it reads as finished changes, and `dev` is fast-forwarded after each squash |
 | Remotes | `origin` → github.com/u9521/BreezeKSU; `upstream` → tiann/KernelSU |

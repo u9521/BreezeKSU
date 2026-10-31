@@ -83,3 +83,52 @@ The `BreezeWebUIHost` / `18 removed_paths` figures above describe the tree at sy
 ## Not done here
 
 `dev` only. `main` takes this with the next verified batch, and nothing was pushed.
+
+## Second advance, same day — `51c21786` → `b1fce49e`
+
+Later on 2026-10-31 the repository was rebased again, onto the two kernel commits that landed upstream after `51c21786`. Everything above still describes the first step accurately; this section is the second.
+
+Seventeen fork commits, all replayed cleanly. The incoming range is `51c217863..b1fce49eb`, v3.3.1-32 → v3.3.1-34, two commits:
+
+| Upstream | Subject | Paths | Route |
+| :--- | :--- | :--- | :--- |
+| `2fe188310` | kernel: Balance file references when reopening wrapped files (#3958) | `kernel/infra/file_wrapper.c` | inherited — a two-line `get_file()`/`fput()` pair; the fork never edited this file |
+| `b1fce49eb` | kernel: Remove noisy logs from critical and frequent paths (#3960) | nine `kernel/` files | inherited — the fork's only kernel edit is `kernel/Kbuild`'s branding constants, which these commits do not touch |
+
+Path intersection with the fork's delta is empty: the fork's 503 changed paths are `manager/`, `doc/`, the agent-framework tree, `js/`, `website/` and `kernel/Kbuild`, and the incoming diff is ten `kernel/*.c` files. The rebase therefore replayed all 17 commits without a single conflict, and every fork-owned path came out byte-identical — checked directly, not inferred:
+
+```
+git diff --stat <pre-rebase tip> <rebased tip> -- . ':!kernel'   → empty
+git diff --stat <rebased tip> <squashed tip> -- . ':!doc/entries' → empty
+```
+
+The second check is the one that matters for the squash: the single commit carries exactly the tree the seventeen commits built, so nothing but the five entry rewrites below distinguishes them.
+
+**The squash came first.** The 17 replayed commits were then collapsed into one, because every step of the Manager rewrite touches the same `manager/` files and a later upstream change would otherwise need one conflict resolution per step:
+
+```
+manager: rebuild the Manager on a five-layer Breeze-only architecture
+```
+
+`dev` is now two commits ahead of `b1fce49e`: the rewrite, and this baseline record. F1–F5 stay five entries in [PRUNING.md](../../PRUNING.md) — the commit is one decision boundary, the entries are five, and the entries record what each step did rather than how the work was sliced.
+
+## Anchors (second advance)
+
+- `doc/PRUNING.md`: `upstream_base` → `b1fce49e`; `upstream_base_advanced` stays `2026-10-31`; the "Most recent" line names both steps.
+- `doc/FUNCTION_MAP.md`: baseline line → `v3.3.1-34-gb1fce49eb`; six line references refreshed against the new tip — K2.4 `237/202/194` → `229/193/194`, K2.5 `:53-145` → `:51-143`, K2.6 `:24-56` → `:24-53`, K2.7 `171` → `162`, K2.10 `593` → `595` (file_wrapper gained the two reference-count lines), K4.2 `:29,420,490` → `:29,407,477`, K4.3 `:41,245` → `:41,233`. Every edit comes from `b1fce49eb`'s own content, not from arithmetic on hunk headers; K4.1 `:60-70` and K8 `:188-478` fall before the deletions and are unchanged.
+- `doc/HANDOFF.md`: Baseline row → `b1fce49e` (v3.3.1-34).
+- `removed_symbols`, `uapi_anchor`, `residue_rev`, `protected_constants`: untouched. `uapi/` is outside the incoming diff, and `KSU_FEATURE_MAX` is still 7.
+
+## Gates (second advance)
+
+| Gate | Result |
+| :--- | :--- |
+| Spec gates (`verify-all`) | green — 10/10, including `verify-doc-entries` over the 5 rewritten entries |
+| G1 pruning integrity | green — `removed_paths` still absent, `protected_constants` hold the fork values |
+| G2 UAPI agreement | green — unchanged; `uapi/` is not in the incoming range |
+| G3 ksud Android compile | skipped — no Rust source changed |
+| G4 Manager compile | not re-run for the second step: the squash was proven tree-identical to the rebased result on every non-`kernel` path, and that result came from a tree that had built green. Any difference would have been a squash defect, and the check would have caught it |
+
+## Needs human (second advance)
+
+Nothing new. The two items above — the AdSense slot and `npm.yml` publishing under upstream's package name — are unchanged by this step, since neither `website/` nor `js/` is in the incoming range.

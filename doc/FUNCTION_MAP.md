@@ -1,6 +1,6 @@
 # KernelSU function map — pruning baseline
 
-> Baseline: `v3.3.1-32-g51c217863` · This document describes what upstream is and where it lives. It does not change code.
+> Baseline: `v3.3.1-34-gb1fce49eb` · This document describes what upstream is and where it lives. It does not change code.
 > Purpose: a complete, tickable inventory of upstream subsystems, so pruning can be decided one ID at a time.
 
 ## 0. Scale
@@ -86,13 +86,13 @@ KernelSU
 | K2.1 | Syscall hook manager (tracepoint + kretprobe) | `hook/syscall_hook_manager.c:128,161` | registry for all syscall hooks | core |
 | K2.2 | Unified dispatcher plus per-architecture routing table | `hook/{arm64,x86_64,riscv64}/syscall_hook.c` | forwards through one empty syscall slot | core |
 | K2.3 | Syscall table install/restore | same, `:31-115` | installs the `read`/`fstat` hooks | core |
-| K2.4 | Kernel text hot patching | `hook/*/patch_memory.c` (237/202/194 lines) | the basis of every patch capability | core |
-| K2.5 | Syscall event bridge | `hook/syscall_event_bridge.c:53-145` | execve/execveat/newfstatat/faccessat/setresuid | core |
-| K2.6 | setresuid hook | `hook/setuid_hook.c:24-56` | the only point where a uid switch is observed | core |
-| K2.7 | Process tracepoint marking | `hook/tp_marker.c` (171) | scopes hooks to target processes | core |
+| K2.4 | Kernel text hot patching | `hook/*/patch_memory.c` (229/193/194 lines) | the basis of every patch capability | core |
+| K2.5 | Syscall event bridge | `hook/syscall_event_bridge.c:51-143` | execve/execveat/newfstatat/faccessat/setresuid | core |
+| K2.6 | setresuid hook | `hook/setuid_hook.c:24-53` | the only point where a uid switch is observed | core |
+| K2.7 | Process tracepoint marking | `hook/tp_marker.c` (162) | scopes hooks to target processes | core |
 | K2.8 | LSM slot hot replacement | `hook/lsm_hook.c` (475) | **its only consumer is selinux_hide** | removable with K5.5 |
 | K2.9 | Symbol resolver | `infra/symbol_resolver.c` (391) | source of every patched symbol | core |
-| K2.10 | fd wrapping layer | `infra/file_wrapper.c` (593) | stdio compatibility for terminal-style su | optional |
+| K2.10 | fd wrapping layer | `infra/file_wrapper.c` (595) | stdio compatibility for terminal-style su | optional |
 | K2.11 | su mount namespace | `infra/su_mount_ns.c` (156) | the root profile's namespace field | optional |
 | K2.12 | seccomp bitmap cache rewriting | `infra/seccomp_cache.c` (65) | lets through seccomp-blocked ioctls | optional |
 | K2.13 | Single-reader event queue | `infra/event_queue.c` (407) | basis of sulog | removable with sulog |
@@ -128,8 +128,8 @@ KernelSU
 | ID | Feature | Implementation | Removability |
 | :--- | :--- | :--- | :--- |
 | K4.1 | allowlist (RCU hash + kref, **not a bitmap**) | `policy/allowlist.c:60-70` | core |
-| K4.2 | Persistence `/data/adb/ksu/.allowlist` (MAGIC/version 4, v2→v4 migration) | `allowlist.c:29,420,490` | core |
-| K4.3 | Default root / non-root profiles (`$` keys) | `allowlist.c:41,245` | core |
+| K4.2 | Persistence `/data/adb/ksu/.allowlist` (MAGIC/version 4, v2→v4 migration) | `allowlist.c:29,407,477` | core |
+| K4.3 | Default root / non-root profiles (`$` keys) | `allowlist.c:41,233` | core |
 | K4.4 | Full app_profile (uid/gid/groups/caps/domain/rules/namespace/flags/umount) | `uapi/app_profile.h`; `policy/app_profile.c` | optional (`CONFIG_KSU_DISABLE_POLICY`) |
 | K4.5 | feature framework plus the `force_feature` parameter | `policy/feature.c:14,48,279` | core base |
 

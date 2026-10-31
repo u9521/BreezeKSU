@@ -12,7 +12,7 @@ Machine-checked by the `breeze-sync-gates` skill. Keep the keys; edit the values
 
 ```yaml
 uapi_anchor: 6                    # the KERNEL_SU_UAPI_VERSION this fork aligns with
-upstream_base: 51c21786          # upstream baseline (v3.3.1-32); a value, not a branch tip
+upstream_base: b1fce49e          # upstream baseline (v3.3.1-34); a value, not a branch tip
 upstream_base_advanced: 2026-10-31   # last baseline advance; see "two words" below
 residue_rev: 1                    # which revision of the residue surfaces the entries were written against
 removed_paths:                    # whole directories/files deleted; a matching upstream change is an error
@@ -104,7 +104,7 @@ The two actions differ in cost by an order of magnitude, and both have been call
 
 **Re-freeze triggers** ([decisions/README.md](decisions/README.md) §6, any one suffices): UAPI behind by ≥2, more than 20 conflicting files in one sync, KMI generation break, toolchain generation break. When none fires, calling a baseline advance a re-freeze is overreaction.
 
-Most recent: **2026-10-31 baseline advance** `75e179d3` → `51c21786` (7 upstream commits, two of them inside `removed_paths`; six fork commits replayed, two with hand resolutions and one new commit on top). No tag, no pruning redone. Report: [sync/2026-10-31](sync/2026-10-31/report.md).
+Most recent: **2026-10-31 baseline advance** `75e179d3` → `b1fce49e`, in two steps on the same day (`75e179d3` → `51c21786` → `b1fce49e`): 9 upstream commits total, two of them inside `removed_paths`; the first step replayed six fork commits with two hand resolutions and one new commit on top, the second replayed the fork's batch commit onto the two kernel commits that landed after it. No tag, no pruning redone. Report: [sync/2026-10-31](sync/2026-10-31/report.md).
 
 Previous: **2026-10-27 baseline advance** `6d31a6137` → `75e179d3` (3 upstream commits, no overlap with the fork; all five fork commits `range-diff` as `=`). No tag, no pruning redone. Report: [sync/2026-10-27](sync/2026-10-27/report.md).
 
