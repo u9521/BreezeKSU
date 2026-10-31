@@ -87,7 +87,11 @@ enum class Groups(val gid: Int, val display: String, val desc: String) {
     GSID(1074, "GSID", "GSI service daemon"),
     FSVERITY_CERT(1075, "fsverity_cert", "fs-verity key ownership in keystore"),
     CREDSTORE(1076, "credstore", "identity credential manager service"),
-    EXTERNAL_STORAGE(1077, "external_storage", "Full external storage access including USB OTG volumes"),
+    EXTERNAL_STORAGE(
+        1077,
+        "external_storage",
+        "Full external storage access including USB OTG volumes"
+    ),
     EXT_DATA_RW(1078, "ext_data_rw", "GID for app-private data directories on external storage"),
     EXT_OBB_RW(1079, "ext_obb_rw", "GID for OBB directories on external storage"),
     CONTEXT_HUB(1080, "context_hub", "GID for access to the Context Hub"),
@@ -99,7 +103,11 @@ enum class Groups(val gid: Int, val display: String, val desc: String) {
     DMESGD(1086, "dmesgd", "dmesg parsing daemon for kernel report collection"),
     JC_WEAVER(1087, "jc_weaver", "Javacard Weaver HAL - to manage omapi ARA rules"),
     JC_STRONGBOX(1088, "jc_strongbox", "Javacard Strongbox HAL - to manage omapi ARA rules"),
-    JC_IDENTITYCRED(1089, "jc_identitycred", "Javacard Identity Cred HAL - to manage omapi ARA rules"),
+    JC_IDENTITYCRED(
+        1089,
+        "jc_identitycred",
+        "Javacard Identity Cred HAL - to manage omapi ARA rules"
+    ),
     SDK_SANDBOX(1090, "sdk_sandbox", "SDK sandbox virtual UID"),
     SECURITY_LOG_WRITER(1091, "security_log_writer", "write to security log"),
     PRNG_SEEDER(1092, "prng_seeder", "PRNG seeder daemon"),

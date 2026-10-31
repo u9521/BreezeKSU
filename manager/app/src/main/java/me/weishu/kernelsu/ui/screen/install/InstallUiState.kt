@@ -1,7 +1,8 @@
 package me.weishu.kernelsu.ui.screen.install
 
 import androidx.compose.runtime.Immutable
-import me.weishu.kernelsu.ui.util.LkmSelection
+import me.weishu.kernelsu.data.ksu.LkmSelection
+import me.weishu.kernelsu.ui.util.UiMessage
 
 @Immutable
 internal data class InstallUiState(
@@ -20,6 +21,12 @@ internal data class InstallUiState(
     val enableAdb: Boolean,
     val forceBackup: Boolean,
     val canForceBackup: Boolean,
+    /** One-shot feedback shown by the scaffold; [InstallScreenActions.onMessageShown] clears it. */
+    val message: UiMessage? = null,
+    /** A remote boot-partition probe is in flight behind the spinner dialog. */
+    val isProbing: Boolean = false,
+    val showChooseKmiDialog: Boolean = false,
+    val showDownloadDialog: Boolean = false,
 )
 
 @Immutable
@@ -36,4 +43,9 @@ internal data class InstallScreenActions(
     val onSelectAllowShell: (Boolean) -> Unit,
     val onSelectEnableAdb: (Boolean) -> Unit,
     val onSelectForceBackup: (Boolean) -> Unit,
+    val onMessageShown: (Long) -> Unit,
+    val onDismissChooseKmi: () -> Unit,
+    val onSelectKmi: (String?) -> Unit,
+    val onDismissDownloadDialog: () -> Unit,
+    val onConfirmDownloadUrl: (String) -> Unit,
 )

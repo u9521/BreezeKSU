@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.lsplugin.apksign)
     alias(libs.plugins.protobuf)
+    alias(libs.plugins.screenshot)
     id("kotlin-parcelize")
 }
 
@@ -23,8 +24,8 @@ val managerVersionCode = rootProject.extra["managerVersionCode"] as Int
 val managerVersionName = rootProject.extra["managerVersionName"] as String
 
 val isPrBuild = project.findProperty("IS_PR_BUILD")?.toString()?.toBoolean() ?: false
-val defaultManagerPackageName = if (isPrBuild) "me.weishu.kernelsu.pr" else "me.weishu.kernelsu"
-val defaultManagerName = if (isPrBuild) "KernelSU PR" else "KernelSU"
+val defaultManagerPackageName = if (isPrBuild) "u9521.breezeksu.pr" else "u9521.breezeksu"
+val defaultManagerName = if (isPrBuild) "BreezeKSU PR" else "BreezeKSU"
 val managerPackageName = project.findProperty("KSU_PACKAGE_NAME")?.toString() ?: defaultManagerPackageName
 val managerName = project.findProperty("KSU_NAME")?.toString() ?: defaultManagerName
 
@@ -132,6 +133,7 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
     compileSdk {
         version =
             release(androidCompileSdkVersion) {
@@ -192,10 +194,9 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.navigation3.ui)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
@@ -203,6 +204,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigationevent.compose)
 
     implementation(libs.com.github.topjohnwu.libsu.core)
@@ -214,28 +217,23 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.commonmark)
-    implementation(libs.commonmark.ext.gfm.tables)
-    implementation(libs.commonmark.ext.gfm.strikethrough)
-    implementation(libs.commonmark.ext.autolink)
-    implementation(libs.commonmark.ext.task.list.items)
-
     implementation(libs.androidx.webkit)
 
     implementation(libs.lsposed.cxx)
 
     implementation(libs.hiddenapibypass)
 
-    implementation(libs.miuix.ui)
-    implementation(libs.miuix.icons)
-    implementation(libs.miuix.nav)
-    implementation(libs.miuix.preference)
-    implementation(libs.miuix.blur)
+
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
 
     implementation(libs.material.kolor)
+
+    implementation(libs.markdown.renderer)
+    implementation(libs.markdown.renderer.m3)
 
     implementation(libs.appiconloader)
 
@@ -243,7 +241,9 @@ dependencies {
     implementation(libs.xz)
     implementation(libs.protobuf.kotlin.lite)
 
-    testImplementation(libs.junit)
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.compose.ui.tooling)
+    screenshotTestImplementation(libs.androidx.compose.ui.tooling.preview)
 }
 
 kotlin {

@@ -16,7 +16,6 @@
         android:name="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         tools:node="remove" />
 
-    <uses-sdk tools:overrideLibrary="top.yukonga.miuix.kmp.blur" />
 
     <application
         android:name=".KernelSUApplication"
@@ -97,7 +96,7 @@
             android:useAppZygote="true" />
 
         <service
-            android:name=".ui.util.DownloadService"
+            android:name=".data.service.DownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 

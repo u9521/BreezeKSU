@@ -1,10 +1,10 @@
 package me.weishu.kernelsu.ui.screen.templateeditor
 
 import me.weishu.kernelsu.Natives
+import me.weishu.kernelsu.data.ksu.getAppProfileTemplate
+import me.weishu.kernelsu.data.ksu.setAppProfileTemplate
 import me.weishu.kernelsu.data.model.TemplateInfo
 import me.weishu.kernelsu.toRawFlags
-import me.weishu.kernelsu.ui.util.getAppProfileTemplate
-import me.weishu.kernelsu.ui.util.setAppProfileTemplate
 
 fun toNativeProfile(templateInfo: TemplateInfo): Natives.Profile {
     val allFlags = Natives.Profile.RootProfileFlag.entries
@@ -34,10 +34,6 @@ fun isTemplateValid(template: TemplateInfo): Boolean {
         return false
     }
     return true
-}
-
-fun idCheck(value: String): Int {
-    return if (value.isEmpty()) 0 else if (isTemplateExist(value)) 1 else if (!isValidTemplateId(value)) 2 else 0
 }
 
 fun saveTemplate(template: TemplateInfo, isCreation: Boolean = false): Boolean {

@@ -5,26 +5,40 @@ import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.UserManager
 import android.system.Os
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
+import java.io.File
+import java.util.Locale
+import me.weishu.kernelsu.data.repository.ModuleRepository
+import me.weishu.kernelsu.data.repository.ModuleRepositoryImpl
+import me.weishu.kernelsu.data.repository.SettingsRepository
 import me.weishu.kernelsu.data.repository.SettingsRepositoryImpl
-import me.weishu.kernelsu.ui.viewmodel.SuperUserViewModel
+import me.weishu.kernelsu.data.repository.SuperUserRepository
+import me.weishu.kernelsu.data.repository.SuperUserRepositoryImpl
+import me.weishu.kernelsu.data.repository.TemplateRepository
+import me.weishu.kernelsu.data.repository.TemplateRepositoryImpl
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import java.io.File
-import java.util.Locale
 
 lateinit var ksuApp: KernelSUApplication
 
-class KernelSUApplication : Application(), ViewModelStoreOwner {
+/**
+ * Process-wide dependency holder.
+ *
+ * Each repository is created once and handed out by property, because a second instance would
+ * read the same preference file into its own state flow and the two would drift apart. Screens
+ * therefore take `ksuApp.settingsRepository` (or a constructor default of it) rather than
+ * constructing a repository themselves.
+ */
+class KernelSUApplication : Application() {
 
     companion object {
         fun setEnableOnBackInvokedCallback(appInfo: ApplicationInfo, enable: Boolean) {
             runCatching {
                 val applicationInfoClass = ApplicationInfo::class.java
-                val method = applicationInfoClass.getDeclaredMethod("setEnableOnBackInvokedCallback", Boolean::class.javaPrimitiveType)
+                val method = applicationInfoClass.getDeclaredMethod(
+                    "setEnableOnBackInvokedCallback",
+                    Boolean::class.javaPrimitiveType
+                )
                 method.isAccessible = true
                 method.invoke(appInfo, enable)
             }
@@ -32,7 +46,15 @@ class KernelSUApplication : Application(), ViewModelStoreOwner {
     }
 
     lateinit var okhttpClient: OkHttpClient
-    private val appViewModelStore by lazy { ViewModelStore() }
+
+    /** Single source of persisted settings; every screen reads this one flow. */
+    val settingsRepository: SettingsRepository by lazy { SettingsRepositoryImpl(this) }
+
+    val superUserRepository: SuperUserRepository by lazy { SuperUserRepositoryImpl() }
+
+    val moduleRepository: ModuleRepository by lazy { ModuleRepositoryImpl() }
+
+    val templateRepository: TemplateRepository by lazy { TemplateRepositoryImpl() }
 
     private fun isUserUnlocked(): Boolean =
         getSystemService(UserManager::class.java)?.isUserUnlocked == true
@@ -46,13 +68,14 @@ class KernelSUApplication : Application(), ViewModelStoreOwner {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            val enable = SettingsRepositoryImpl().enablePredictiveBack
+            val enable = settingsRepository.settings.value.enablePredictiveBack
             HiddenApiBypass.addHiddenApiExemptions("Landroid/content/pm/ApplicationInfo;->setEnableOnBackInvokedCallback")
             setEnableOnBackInvokedCallback(applicationInfo, enable)
         }
 
-        val superUserViewModel = ViewModelProvider(this)[SuperUserViewModel::class.java]
-        superUserViewModel.loadAppList()
+        // Warm the app scan before the first SuperUser screen asks for it: the pass over
+        // every installed package is what makes that screen slow on a cold start.
+        superUserRepository.prefetchApps()
 
         val webroot = File(dataDir, "webroot")
         if (!webroot.exists()) {
@@ -72,7 +95,4 @@ class KernelSUApplication : Application(), ViewModelStoreOwner {
                     )
                 }.build()
     }
-
-    override val viewModelStore: ViewModelStore
-        get() = appViewModelStore
 }

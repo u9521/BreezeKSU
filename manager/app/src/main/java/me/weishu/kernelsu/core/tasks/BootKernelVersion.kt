@@ -1,9 +1,5 @@
 package me.weishu.kernelsu.core.tasks
 
-import org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorInputStream
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
-import org.apache.commons.io.IOUtils
-import me.weishu.kernelsu.core.utils.DataSourceChannel
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -15,6 +11,10 @@ import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 import java.nio.file.StandardOpenOption
 import java.util.zip.GZIPInputStream
+import me.weishu.kernelsu.core.utils.DataSourceChannel
+import org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorInputStream
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
+import org.apache.commons.io.IOUtils
 
 /**
  * Mirrors ksud's parse_kmi_from_boot: touches only the boot header plus the
@@ -146,8 +146,8 @@ object BootKernelVersion {
 
     private fun isCompressedKernel(data: ByteArray, offset: Int): Boolean {
         return startsWithAt(data, offset, gzipMagic) ||
-            startsWithAt(data, offset, xzMagic) ||
-            startsWithAt(data, offset, lz4FrameMagic)
+                startsWithAt(data, offset, xzMagic) ||
+                startsWithAt(data, offset, lz4FrameMagic)
     }
 
     private fun readRange(channel: FileChannel, position: Long, length: Long): ByteArray? {
@@ -192,7 +192,10 @@ object BootKernelVersion {
             val stream = when {
                 startsWith(data, gzipMagic) -> GZIPInputStream(ByteArrayInputStream(data))
                 startsWith(data, xzMagic) -> XZCompressorInputStream(ByteArrayInputStream(data))
-                startsWith(data, lz4FrameMagic) -> FramedLZ4CompressorInputStream(ByteArrayInputStream(data))
+                startsWith(data, lz4FrameMagic) -> FramedLZ4CompressorInputStream(
+                    ByteArrayInputStream(data)
+                )
+
                 else -> return null
             }
             stream.use { decompressPrefix(it) }
@@ -238,8 +241,8 @@ object BootKernelVersion {
 
     private fun ByteArray.u32le(pos: Int): Long {
         return (this[pos].toLong() and 0xFF) or
-            ((this[pos + 1].toLong() and 0xFF) shl 8) or
-            ((this[pos + 2].toLong() and 0xFF) shl 16) or
-            ((this[pos + 3].toLong() and 0xFF) shl 24)
+                ((this[pos + 1].toLong() and 0xFF) shl 8) or
+                ((this[pos + 2].toLong() and 0xFF) shl 16) or
+                ((this[pos + 3].toLong() and 0xFF) shl 24)
     }
 }

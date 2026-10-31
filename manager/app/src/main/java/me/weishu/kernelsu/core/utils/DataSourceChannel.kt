@@ -1,8 +1,5 @@
 package me.weishu.kernelsu.core.utils
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.apache.commons.io.input.BoundedInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -11,6 +8,9 @@ import java.nio.channels.ClosedChannelException
 import java.nio.channels.FileChannel
 import java.nio.channels.NonWritableChannelException
 import java.nio.channels.SeekableByteChannel
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.apache.commons.io.input.BoundedInputStream
 
 class DataSourceChannel private constructor(
     private val client: OkHttpClient?,
@@ -20,7 +20,13 @@ class DataSourceChannel private constructor(
     private val totalSize: Long,
 ) : SeekableByteChannel {
 
-    constructor(client: OkHttpClient, url: String) : this(client, url, null, 0, fetchTotalSize(client, url))
+    constructor(client: OkHttpClient, url: String) : this(
+        client,
+        url,
+        null,
+        0,
+        fetchTotalSize(client, url)
+    )
 
     private var pos = 0L
     private var open = true

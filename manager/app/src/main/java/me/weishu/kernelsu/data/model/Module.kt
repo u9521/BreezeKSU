@@ -1,8 +1,5 @@
 package me.weishu.kernelsu.data.model
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class Module(
     val id: String,
     val name: String,

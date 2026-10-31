@@ -1,35 +1,22 @@
 package me.weishu.kernelsu.data.repository
 
+import kotlinx.coroutines.flow.StateFlow
+import me.weishu.kernelsu.data.UiSettings
+
+/**
+ * Persisted preferences plus the kernel/ksud feature switches the settings screens drive.
+ *
+ * There is exactly one instance per process - `KernelSUApplication.settingsRepository` - so
+ * every reader sees the same [settings] flow and a write from one screen shows up in the next
+ * one immediately. Constructing your own would give you a second, silently divergent copy.
+ */
 interface SettingsRepository {
-    var uiMode: String
-    var checkUpdate: Boolean
-    var checkModuleUpdate: Boolean
-    var themeMode: Int
-    var miuixMonet: Boolean
-    var keyColor: Int
-    var colorStyle: String
-    var colorSpec: String
-    var enablePredictiveBack: Boolean
-    var enableSwipeDismiss: Boolean
-    var pagerInterceptionMode: Int
-    var enableBlur: Boolean
-    var enableFloatingBottomBar: Boolean
-    var enableFloatingBottomBarBlur: Boolean
-    var enableNavigationBadge: Boolean
-    var navigationRailExpanded: Boolean
-    var pageScale: Float
-    var moduleDescriptionMaxLines: Int
-    var enableWebDebugging: Boolean
-    var moduleSortEnabledFirst: Boolean
-    var moduleSortActionFirst: Boolean
-    /** Name of the [me.weishu.kernelsu.ui.screen.modulerepo.RepoSort] entry. */
-    var moduleRepoSortOrder: String
-    var superuserShowSystemApps: Boolean
-    var superuserShowOnlyPrimaryUserApps: Boolean
-    var superuserSortOption: Int
-    var suLogFilters: Set<String>?
-    var autoJailbreak: Boolean
-    var useSoftReboot: Boolean
+    /** Observable snapshot; every write publishes a new immutable value. */
+    val settings: StateFlow<UiSettings>
+
+    /** Applies [transform] atomically and persists only the keys it changed. */
+    fun update(transform: (UiSettings) -> UiSettings)
+
     val intentToken: String
 
     suspend fun getSuCompatStatus(): String

@@ -8,17 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.R
-import me.weishu.kernelsu.data.repository.ModuleRepositoryImpl
-import me.weishu.kernelsu.ui.util.runModuleAction
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import me.weishu.kernelsu.data.ksu.runModuleAction
+import me.weishu.kernelsu.ksuApp
 
 @Composable
 fun ExecuteModuleActionEffect(
@@ -39,8 +39,7 @@ fun ExecuteModuleActionEffect(
         if (text.isNotEmpty()) {
             return@LaunchedEffect
         }
-        val repo = ModuleRepositoryImpl()
-        val modules = repo.getModules().getOrDefault(emptyList())
+        val modules = ksuApp.moduleRepository.getModules().getOrDefault(emptyList())
         val moduleInfo = modules.find { info -> info.id == moduleId }
         if (moduleInfo == null) {
             Toast.makeText(context, noModule.format(moduleId), Toast.LENGTH_SHORT).show()
@@ -52,7 +51,8 @@ fun ExecuteModuleActionEffect(
             return@LaunchedEffect
         }
         if (!moduleInfo.enabled || moduleInfo.update || moduleInfo.remove) {
-            Toast.makeText(context, moduleUnavailable.format(moduleInfo.name), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, moduleUnavailable.format(moduleInfo.name), Toast.LENGTH_SHORT)
+                .show()
             onExit()
             return@LaunchedEffect
         }

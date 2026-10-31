@@ -2,18 +2,16 @@ package me.weishu.kernelsu.ui.screen.module
 
 import android.net.Uri
 import androidx.compose.runtime.Immutable
-import me.weishu.kernelsu.data.registry.ExpectedFile
 import me.weishu.kernelsu.data.model.Module
 import me.weishu.kernelsu.data.model.ModuleUpdateInfo
-import me.weishu.kernelsu.ui.component.SearchStatus
 
 sealed interface ModuleConfirmRequest {
     data class Update(
         val module: Module,
         val downloadUrl: String,
         val fileName: String,
-        /** Set when the update is a registry release: size + SHA-256 are enforced. */
-        val expected: ExpectedFile? = null,
+        /** Kept so a failed changelog fetch can be retried in place. */
+        val updateInfo: ModuleUpdateInfo? = null,
     ) : ModuleConfirmRequest
 
     data class Uninstall(
@@ -27,11 +25,16 @@ data class ModuleConfirmDialogState(
     val title: String,
     val content: String? = null,
     val markdown: Boolean = false,
-    val html: Boolean = false,
-    /** Registry-hosted content: render with JavaScript off and network locked to the registry. */
-    val restricted: Boolean = false,
     val confirm: String? = null,
     val dismiss: String? = null,
+    /** Changelog fetch failed; the empty state offers a retry. */
+    val changelogFailed: Boolean = false,
+    /** Module `updateJson` declares no changelog URL. */
+    val changelogNotConfigured: Boolean = false,
+    /** Changelog URL returned a blank body. */
+    val changelogEmpty: Boolean = false,
+    /** Changelog fetch is in flight; shown inside the dialog before the text arrives. */
+    val changelogLoading: Boolean = false,
 )
 
 sealed interface ModuleEffect {
@@ -51,14 +54,19 @@ data class ModuleUiState(
     val modules: List<Module> = emptyList(),
     val moduleList: List<Module> = emptyList(),
     val updateInfo: Map<String, ModuleUpdateInfo> = emptyMap(),
-    val searchStatus: SearchStatus = SearchStatus(""),
+    /** Raw query from the search bar; empty means "not searching". */
+    val searchText: String = "",
     val searchResults: List<Module> = emptyList(),
     val sortEnabledFirst: Boolean = false,
     val sortActionFirst: Boolean = false,
     val checkModuleUpdate: Boolean = true,
+    /** How many lines a module description may occupy before it is truncated. */
+    val descriptionMaxLines: Int = 4,
     val isSafeMode: Boolean = false,
     val magiskInstalled: Boolean = false,
     val confirmDialogState: ModuleConfirmDialogState? = null,
+    /** A downloaded module archive waiting for the install confirmation dialog. */
+    val pendingInstallUri: Uri? = null,
 ) {
     val installButtonVisible: Boolean
         get() = !(isSafeMode || magiskInstalled)
@@ -67,7 +75,6 @@ data class ModuleUiState(
 @Immutable
 data class ModuleActions(
     val onRefresh: () -> Unit,
-    val onSearchStatusChange: (SearchStatus) -> Unit,
     val onSearchTextChange: (String) -> Unit,
     val onClearSearch: () -> Unit,
     val onRequestUpdateConfirmation: (Module, ModuleUpdateInfo) -> Unit,
@@ -83,4 +90,6 @@ data class ModuleActions(
     val onUndoUninstallModule: (Module) -> Unit,
     val onOpenFlash: (List<Uri>) -> Unit,
     val onExecuteModuleAction: (Module) -> Unit,
+    val onConfirmPendingInstall: () -> Unit,
+    val onDismissPendingInstall: () -> Unit,
 )

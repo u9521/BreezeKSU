@@ -3,9 +3,6 @@ package me.weishu.kernelsu.core.tasks
 import chromeos_update_engine.UpdateMetadata.DeltaArchiveManifest
 import chromeos_update_engine.UpdateMetadata.InstallOperation
 import chromeos_update_engine.UpdateMetadata.PartitionUpdate
-import me.weishu.kernelsu.core.utils.DataSourceChannel
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -16,6 +13,9 @@ import java.nio.ByteOrder
 import java.nio.channels.FileChannel
 import java.nio.file.StandardOpenOption
 import java.security.MessageDigest
+import me.weishu.kernelsu.core.utils.DataSourceChannel
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 
 class Payload(private val channel: DataSourceChannel) {
     private val manifest: DeltaArchiveManifest
@@ -97,7 +97,8 @@ class Payload(private val channel: DataSourceChannel) {
             minOf(first.dataLength, HEADER_PROBE_LIMIT),
         ) ?: return null
         val headerChunk = decodeChunk(header, first.getType()) ?: return null
-        val (kernelOffset, kernelSize) = BootKernelVersion.bootKernelBlock(headerChunk) ?: return null
+        val (kernelOffset, kernelSize) = BootKernelVersion.bootKernelBlock(headerChunk)
+            ?: return null
         if (kernelSize <= 0) return null
 
         val target = kernelOffset.toLong() + kernelSize / 2L
@@ -170,8 +171,18 @@ class Payload(private val channel: DataSourceChannel) {
     private fun decompressPrefix(data: ByteArray, type: InstallOperation.Type): ByteArray? {
         return try {
             val stream = when (type) {
-                InstallOperation.Type.REPLACE_BZ -> BZip2CompressorInputStream(ByteArrayInputStream(data))
-                InstallOperation.Type.REPLACE_XZ -> XZCompressorInputStream(ByteArrayInputStream(data))
+                InstallOperation.Type.REPLACE_BZ -> BZip2CompressorInputStream(
+                    ByteArrayInputStream(
+                        data
+                    )
+                )
+
+                InstallOperation.Type.REPLACE_XZ -> XZCompressorInputStream(
+                    ByteArrayInputStream(
+                        data
+                    )
+                )
+
                 else -> return null
             }
             stream.use { decompressPrefix(it) }

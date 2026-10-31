@@ -7,7 +7,7 @@ plugins {
 extra["androidMinSdkVersion"] = 31
 extra["androidTargetSdkVersion"] = 37
 extra["androidCompileSdkVersion"] = 37
-extra["androidCompileSdkVersionMinor"] = 0
+extra["androidCompileSdkVersionMinor"] = 1
 extra["androidBuildToolsVersion"] = "37.0.0"
 extra["androidCompileNdkVersion"] = libs.versions.ndk.get()
 extra["androidSourceCompatibility"] = JavaVersion.VERSION_21
