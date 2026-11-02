@@ -29,7 +29,6 @@
 #include "selinux/selinux.h"
 #include "hook/syscall_hook.h"
 #include "hook/syscall_event_bridge.h"
-#include "preinit/preinit.h"
 
 // clang-format off
 static const char KERNEL_SU_RC[] =
@@ -162,7 +161,6 @@ void ksu_handle_execveat_ksud(const char *path, struct user_arg_ptr *argv)
         char buf[16];
         if (!init_second_stage_executed && check_argv(*argv, 1, "second_stage", buf, sizeof(buf))) {
             pr_info("/system/bin/init second_stage executed\n");
-            ksu_preinit_release();
             ksu_selinux_hide_handle_second_stage();
             apply_kernelsu_rules();
             cache_sid();
@@ -177,7 +175,6 @@ void ksu_handle_execveat_ksud(const char *path, struct user_arg_ptr *argv)
         char buf[16];
         if (check_argv(*argv, 1, "-Xzygote", buf, sizeof(buf))) {
             pr_info("exec zygote, /data prepared, second_stage: %d\n", init_second_stage_executed);
-            ksu_preinit_release();
             on_post_fs_data();
             first_zygote = false;
             ksu_stop_ksud_execve_hook();

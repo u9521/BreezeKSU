@@ -42,11 +42,6 @@ mod android {
     pub const VOLD_METADATA_FILE_CON: &str = "u:object_r:vold_metadata_file:s0";
     pub const MODULES_RC_FILE: &str = "modules.rc";
     pub const MODULES_RC_TMP_FILE: &str = ".modules.rc.tmp";
-    // Module preinit dirs are synced to PREINIT_DIR_*/preinit/<id>/ and run by the kernel's runner
-    pub const PREINIT_SUBDIR: &str = "preinit";
-    pub const PREINIT_MANIFEST_FILE: &str = ".manifest";
-    pub const PREINIT_BOOTCOUNT_FILE: &str = ".preinit_bootcount";
-    pub const PREINIT_STATUS_PATH: &str = concatcp!(WORKING_DIR, "preinit_status");
 
     pub const MODULE_WEB_DIR: &str = "webroot";
     pub const MODULE_ACTION_SH: &str = "action.sh";
@@ -55,7 +50,6 @@ mod android {
     pub const REMOVE_FILE_NAME: &str = "remove";
     pub const MODULE_INIT_RC_DIR: &str = "initrc";
     pub const MODULE_PREINIT_DIR: &str = "preinit";
-    pub const PREINIT_CONF: &str = "preinit.conf";
     // Written by installer.sh when customize.sh requests a hot install
     pub const HOT_INSTALL_MARKER: &str = ".ksu_hot_install";
 

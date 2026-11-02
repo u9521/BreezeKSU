@@ -151,7 +151,7 @@ pub fn apply(module_id: &str, is_metamodule: bool, request: &Request) -> bool {
     }
 
     if live_dir.join(defs::MODULE_PREINIT_DIR).is_dir() {
-        println!("- Note: preinit actions run from the next boot");
+        println!("- Warning: this module ships a preinit/ dir, which BreezeKSU ignores");
     }
 
     if let Some(script) = run_script {

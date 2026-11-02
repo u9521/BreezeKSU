@@ -615,8 +615,13 @@ fn regenerate_preinit_rc(
     Ok(())
 }
 
-/// Rebuild what the kernel picks up from the preinit partition on the next boot: modules.rc and
-/// the modules' preinit dirs.
+/// Rebuild what the kernel picks up from the preinit partition on the next boot.
+///
+/// Only the initrc half still does work: `modules.rc` is concatenated here and the kernel splices
+/// it into init.rc. The preinit half is a no-op — the fork has no kernel runner, so
+/// `crate::preinit::sync()` returns immediately and nothing is copied to /metadata. The function
+/// keeps its name and shape so the call sites in `module.rs`, `init_event.rs` and `cli.rs` stay
+/// untouched.
 pub fn regenerate_preinit() -> Result<()> {
     let preinit_str = preinit_ksu_dir();
     let con = preinit_con(preinit_str);
