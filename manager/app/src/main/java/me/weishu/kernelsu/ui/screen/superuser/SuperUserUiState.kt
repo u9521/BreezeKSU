@@ -2,10 +2,7 @@ package me.weishu.kernelsu.ui.screen.superuser
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
 import me.weishu.kernelsu.data.model.AppInfo
-import me.weishu.kernelsu.ui.component.SearchStatus
-import me.weishu.kernelsu.ui.viewmodel.AppSortConfig
 
 @Immutable
 data class GroupedApps(
@@ -26,7 +23,8 @@ data class SuperUserUiState(
     val groupedApps: List<GroupedApps> = emptyList(),
     val recentlyInstalledResults: List<GroupedApps> = emptyList(),
     val userIds: List<Int> = emptyList(),
-    val searchStatus: SearchStatus = SearchStatus(""),
+    /** Raw query from the search bar; empty means "not searching". */
+    val searchText: String = "",
     val searchResults: List<GroupedApps> = emptyList(),
     val showSystemApps: Boolean = false,
     val showOnlyPrimaryUserApps: Boolean = false,
@@ -39,17 +37,9 @@ data class SuperUserActions(
     val onRefresh: () -> Unit,
     val onOpenSulog: () -> Unit,
     val onSearchTextChange: (String) -> Unit,
-    val onSearchStatusChange: (SearchStatus) -> Unit,
     val onClearSearch: () -> Unit,
     val onToggleShowSystemApps: () -> Unit,
     val onToggleShowOnlyPrimaryUserApps: () -> Unit,
     val onUpdateSortConfig: (AppSortConfig) -> Unit,
     val onOpenProfile: (GroupedApps) -> Unit,
-)
-
-@Immutable
-data class StatusMeta(
-    val label: String,
-    val bg: Color,
-    val fg: Color
 )

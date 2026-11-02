@@ -42,9 +42,7 @@ internal sealed class InstallMethod : Parcelable {
 
 fun isKoFile(context: Context, uri: Uri): Boolean {
     val seg = uri.lastPathSegment ?: ""
-    if (seg.endsWith(".ko", ignoreCase = true)) return true
-
-    return try {
+    return seg.endsWith(".ko", ignoreCase = true) || try {
         context.contentResolver.query(
             uri,
             arrayOf(OpenableColumns.DISPLAY_NAME),

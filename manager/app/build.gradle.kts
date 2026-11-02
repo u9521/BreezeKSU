@@ -1,14 +1,36 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.google.protobuf.gradle.id
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.agp.app)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.lsplugin.apksign)
     alias(libs.plugins.protobuf)
     id("kotlin-parcelize")
+}
+
+/**
+ * Signing is optional. When `keystore/sign.properties` is absent or its keystore is missing, the
+ * release variant falls back to the debug key and its APK is suffixed `-debugkey`.
+ *
+ * Each value may be overridden by an environment variable of the same name, so CI can supply
+ * passwords without checking anything in. Reading goes through [Provider]s so the configuration
+ * cache keeps working.
+ */
+val signPropsFile = rootProject.layout.projectDirectory.file("keystore/sign.properties")
+val signProps = providers.fileContents(signPropsFile).asText.orElse("").map { text ->
+    Properties().apply { text.byteInputStream().use(::load) }
+}
+
+fun signingProperty(key: String): Provider<String> =
+    providers.environmentVariable(key).orElse(signProps.map { it.getProperty(key) ?: "" })
+
+val hasReleaseKeystore: Provider<Boolean> = signProps.map { props ->
+    props.getProperty("keystoreFile")
+        ?.takeIf { it.isNotBlank() }
+        ?.let { rootProject.file(it).exists() } ?: false
 }
 
 val androidCompileSdkVersion = rootProject.extra["androidCompileSdkVersion"] as Int
@@ -23,17 +45,10 @@ val managerVersionCode = rootProject.extra["managerVersionCode"] as Int
 val managerVersionName = rootProject.extra["managerVersionName"] as String
 
 val isPrBuild = project.findProperty("IS_PR_BUILD")?.toString()?.toBoolean() ?: false
-val defaultManagerPackageName = if (isPrBuild) "me.weishu.kernelsu.pr" else "me.weishu.kernelsu"
-val defaultManagerName = if (isPrBuild) "KernelSU PR" else "KernelSU"
+val defaultManagerPackageName = if (isPrBuild) "u9521.breezeksu.pr" else "u9521.breezeksu"
+val defaultManagerName = if (isPrBuild) "BreezeKSU PR" else "BreezeKSU"
 val managerPackageName = project.findProperty("KSU_PACKAGE_NAME")?.toString() ?: defaultManagerPackageName
 val managerName = project.findProperty("KSU_NAME")?.toString() ?: defaultManagerName
-
-apksign {
-    storeFileProperty = "KEYSTORE_FILE"
-    storePasswordProperty = "KEYSTORE_PASSWORD"
-    keyAliasProperty = "KEY_ALIAS"
-    keyPasswordProperty = "KEY_PASSWORD"
-}
 
 protobuf {
     protoc {
@@ -63,8 +78,22 @@ val baseCppFlags = baseCFlags + "-fno-rtti"
 android {
     namespace = "me.weishu.kernelsu"
 
+    signingConfigs {
+        create("release") {
+            if (hasReleaseKeystore.get()) {
+                storeFile = rootProject.file(signProps.get().getProperty("keystoreFile").orEmpty())
+                storePassword = signingProperty("keystorePassword").get()
+                keyAlias = signingProperty("keyAlias").get()
+                keyPassword = signingProperty("keyPassword").get()
+            } else {
+                initWith(getByName("debug"))
+            }
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig = signingConfigs.getByName("release")
             externalNativeBuild {
                 cmake {
                     arguments += listOf("-DCMAKE_CXX_FLAGS_DEBUG=-Og", "-DCMAKE_C_FLAGS_DEBUG=-Og")
@@ -72,10 +101,14 @@ android {
             }
         }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
+            optimization {
+                enable = true
+                keepRules {
+                    includeDefault = true
+                }
+            }
             vcsInfo.include = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             externalNativeBuild {
                 cmake {
                     arguments += "-DDEBUG_SYMBOLS_PATH=${layout.buildDirectory.get().asFile.absolutePath}/symbols"
@@ -158,9 +191,19 @@ android {
                 cppFlags += baseCppFlags + "-std=c++2b"
             }
         }
+    }
 
-        ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64", "riscv64")
+    // One APK per ABI so a download only carries the native code its device runs. A universal APK
+    // is deliberately not produced: it would ship every ABI again and undo the saving.
+    //
+    // The ABIs are declared here rather than in `defaultConfig.ndk.abiFilters`: AGP rejects having
+    // both, and the split list already restricts what the CMake and jniLibs merge produce.
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "x86_64", "riscv64")
+            isUniversalApk = false
         }
     }
 
@@ -181,9 +224,15 @@ androidComponents {
     }
 }
 
+// The marker lives in the archive base name rather than in `outputFileName`: every ABI split
+// shares one variant, so setting the output file per output would collide, and reading it back to
+// build the name evaluates the property against itself.
 base {
     archivesName.set(
-        "${managerName.replace(" ", "_")}_${managerVersionName}_${managerVersionCode}"
+        providers.provider {
+            val marker = if (hasReleaseKeystore.get()) "" else "_debugkey"
+            "${managerName.replace(" ", "_")}_${managerVersionName}_${managerVersionCode}$marker"
+        }
     )
 }
 
@@ -192,17 +241,19 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.navigation3.ui)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.tooling.preview)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigationevent.compose)
 
     implementation(libs.com.github.topjohnwu.libsu.core)
@@ -214,36 +265,29 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.commonmark)
-    implementation(libs.commonmark.ext.gfm.tables)
-    implementation(libs.commonmark.ext.gfm.strikethrough)
-    implementation(libs.commonmark.ext.autolink)
-    implementation(libs.commonmark.ext.task.list.items)
-
     implementation(libs.androidx.webkit)
 
     implementation(libs.lsposed.cxx)
 
     implementation(libs.hiddenapibypass)
 
-    implementation(libs.miuix.ui)
-    implementation(libs.miuix.icons)
-    implementation(libs.miuix.nav)
-    implementation(libs.miuix.preference)
-    implementation(libs.miuix.blur)
+
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
 
     implementation(libs.material.kolor)
 
+    implementation(libs.markdown.renderer)
+    implementation(libs.markdown.renderer.m3)
+
     implementation(libs.appiconloader)
 
     implementation(libs.commons.compress)
     implementation(libs.xz)
     implementation(libs.protobuf.kotlin.lite)
-
-    testImplementation(libs.junit)
 }
 
 kotlin {

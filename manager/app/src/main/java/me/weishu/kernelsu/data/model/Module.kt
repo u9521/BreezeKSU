@@ -1,8 +1,5 @@
 package me.weishu.kernelsu.data.model
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class Module(
     val id: String,
     val name: String,
@@ -19,6 +16,4 @@ data class Module(
     val metamodule: Boolean,
     val actionIconPath: String?,
     val webUiIconPath: String?,
-    // preinit state for the next boot: "", "ok", "no_space", "error" or "bootloop"
-    val preinit: String = "",
 )

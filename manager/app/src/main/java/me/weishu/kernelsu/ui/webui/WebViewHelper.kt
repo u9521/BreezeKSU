@@ -23,11 +23,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.AppInfo
-import me.weishu.kernelsu.data.repository.ModuleRepositoryImpl
+import me.weishu.kernelsu.ksuApp
 import me.weishu.kernelsu.ui.util.AppIconCache
-import me.weishu.kernelsu.ui.util.createRootShell
+import me.weishu.kernelsu.data.ksu.createRootShell
 import me.weishu.kernelsu.ui.util.withMainUserUid
-import me.weishu.kernelsu.ui.viewmodel.SuperUserViewModel
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -42,7 +41,7 @@ private fun loadDownloadJs(context: Context): String {
 }
 
 internal fun webUIApps(): List<AppInfo> = runBlocking {
-    SuperUserViewModel.loadApps(useCache = true).getOrNull()?.first.orEmpty()
+    ksuApp.superUserRepository.loadApps(useCache = true).getOrNull()?.first.orEmpty()
 }
 
 fun Activity.setTaskDescription(label: String) {
@@ -64,8 +63,7 @@ internal suspend fun prepareWebView(
     webUIState: WebUIState,
 ) {
     withContext(Dispatchers.IO) {
-        val repo = ModuleRepositoryImpl()
-        val modules = repo.getModules().getOrDefault(emptyList())
+        val modules = ksuApp.moduleRepository.getModules().getOrDefault(emptyList())
         val moduleInfo = modules.find { info -> info.id == moduleId }
 
         if (moduleInfo == null) {

@@ -2,16 +2,14 @@ package me.weishu.kernelsu.data.model
 
 import android.os.Parcelable
 import android.util.Log
-import androidx.compose.runtime.Immutable
+import java.util.Locale
 import kotlinx.parcelize.Parcelize
 import me.weishu.kernelsu.Natives
 import me.weishu.kernelsu.profile.Capabilities
 import me.weishu.kernelsu.profile.Groups
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Locale
 
-@Immutable
 @Parcelize
 data class TemplateInfo(
     val id: String = "",

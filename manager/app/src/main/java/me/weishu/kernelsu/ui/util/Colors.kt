@@ -92,7 +92,12 @@ fun adjustLightnessArgb(argb: Int, delta: Float): Int {
     return hslToArgb(h, s, nl, alpha)
 }
 
-fun ensureVisibleByMix(original: Int, candidate: Int, minRatio: Double, mixWithWhiteIfLighter: Boolean): Int {
+fun ensureVisibleByMix(
+    original: Int,
+    candidate: Int,
+    minRatio: Double,
+    mixWithWhiteIfLighter: Boolean
+): Int {
     if (contrastRatio(original, candidate) >= minRatio) return candidate
     val target = if (mixWithWhiteIfLighter) 0xFFFFFFFF.toInt() else 0xFF000000.toInt()
     var lo = 0f

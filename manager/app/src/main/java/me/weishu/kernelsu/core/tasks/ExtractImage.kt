@@ -1,9 +1,5 @@
 package me.weishu.kernelsu.core.tasks
 
-import me.weishu.kernelsu.core.utils.DataSourceChannel
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
-import org.apache.commons.compress.archivers.zip.ZipFile
-import org.apache.commons.compress.archivers.zip.ZipMethod
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -11,6 +7,10 @@ import java.nio.channels.FileChannel
 import java.nio.file.StandardOpenOption
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
+import me.weishu.kernelsu.core.utils.DataSourceChannel
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
+import org.apache.commons.compress.archivers.zip.ZipFile
+import org.apache.commons.compress.archivers.zip.ZipMethod
 
 data class ProbeResult(
     val partitions: List<String>,

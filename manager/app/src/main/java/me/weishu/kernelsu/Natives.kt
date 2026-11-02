@@ -2,11 +2,10 @@ package me.weishu.kernelsu
 
 import android.os.Parcelable
 import androidx.annotation.Keep
-import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import me.weishu.kernelsu.Natives.Profile.RootProfileFlag
-import me.weishu.kernelsu.ui.util.rootAvailable
+import me.weishu.kernelsu.data.ksu.rootAvailable
 
 /**
  * @author weishu
@@ -131,7 +130,6 @@ object Natives {
     }
 
     @Keep
-    @Immutable
     @Parcelize
     @Serializable
     data class Profile(
