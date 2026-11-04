@@ -31,6 +31,11 @@ const llmsTxtTemplate = `# {title}
 `
 
 export default defineConfig( {
+    // Must match the GitHub repository name: the site is published as a project page
+    // at https://u9521.github.io/BreezeKSU/, so every asset URL is prefixed with it.
+    // VitePress only appends the trailing slash, never the leading one — keep both.
+    // Renaming the repository means changing this value in the same commit.
+    base: '/BreezeKSU/',
     title: 'KernelSU',
     locales: locales.locales,
     transformPageData,
@@ -56,13 +61,6 @@ export default defineConfig( {
             }),
         ],
     },
-    head: [
-        ['script', {
-            async: 'async',
-            src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2610070972052494',
-            crossorigin: 'anonymous',
-        }],
-    ],
     sitemap: {
         hostname: 'https://kernelsu.org'
     },
