@@ -64,8 +64,6 @@
     <string name="settings_umount_modules_default">Desmontar módulos por padrão</string>
     <string name="settings_umount_modules_default_summary">O valor padrão global para \"Desmontar módulos\" em Perfil do Aplicativo. Se ativado, ele removerá todas as modificações do módulo no sistema para apps que não possuem um perfil definido.</string>
     <string name="profile_umount_modules_summary">Ativar esta opção permitirá que o KernelSU restaure quaisquer arquivos modificados pelos módulos para este app.</string>
-    <string name="profile_selinux_domain">Domínio</string>
-    <string name="profile_selinux_rules">Regras</string>
     <string name="module_update">Atualizar</string>
     <string name="module_downloading">Baixando módulo %s</string>
     <string name="module_start_downloading">Começando a baixar %s</string>
@@ -73,7 +71,6 @@
     <string name="launch_app">Iniciar</string>
     <string name="force_stop_app">Forçar parada</string>
     <string name="restart_app">Reiniciar</string>
-    <string name="failed_to_update_sepolicy">Falha ao atualizar as regras do SELinux para %s</string>
     <string name="home_lkm_update_available">Uma versão mais recente do LKM integrado está disponível. Toque para atualizar.</string>
     <string name="home_lkm_custom">Personalizado</string>
     <string name="require_manager_version">É necessário atualizar o gerenciador.</string>
@@ -106,11 +103,6 @@
     <string name="enable_web_debugging">Ativar depuração do WebView</string>
     <string name="enable_web_debugging_summary">Pode ser usado para depurar o WebUI. Por favor, ative somente quando necessário.</string>
     <string name="select_file">Selecione e corrija um arquivo</string>
-    <string name="download_file">Baixe e corrija um arquivo</string>
-    <string name="download_dialog_title">Insira o URL da imagem</string>
-    <string name="download_dialog_msg">Imagem OTA completa ou imagem de fábrica</string>
-    <string name="download_no_boot_partition">Nenhuma partição boot, init_boot ou vendor_boot encontrada na imagem</string>
-    <string name="download_probe_failed">Falha ao analisar a imagem: %1$s</string>
     <string name="direct_install">Instalação direta (recomendada)</string>
     <string name="install_inactive_slot">Instalar no slot inativo (após o OTA)</string>
     <string name="install_inactive_slot_warning">Seu dispositivo será **FORÇADO** a inicializar no slot inativo atual após uma reinicialização!

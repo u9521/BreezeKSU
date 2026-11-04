@@ -2,7 +2,7 @@ package me.weishu.kernelsu.ui.screen.home
 
 import androidx.compose.runtime.Immutable
 import me.weishu.kernelsu.KernelVersion
-import me.weishu.kernelsu.ui.util.module.LatestVersionInfo
+import me.weishu.kernelsu.data.model.LatestVersionInfo
 
 @Immutable
 data class HomeUiState(
@@ -25,24 +25,6 @@ data class HomeUiState(
     val currentManagerVersionCode: Long,
     val systemInfo: SystemInfo,
 ) {
-    val isSELinuxPermissive: Boolean
-        get() = systemInfo.selinuxStatus == "Permissive"
-
-    val showGkiWarning: Boolean
-        get() = ksuVersion != null && lkmMode == false
-
-    val showLkmUpdate: Boolean
-        get() = isManager &&
-                lkmMode == true &&
-                isLkmBundled &&
-                ksuVersion?.toLong() != currentManagerVersionCode &&
-                !requiresNewKernel &&
-                !requiresNewManager
-
-    // Jailbreak mode runs on locked bootloaders, so flashing a boot image would brick the device.
-    val canInstallKernelUpdate: Boolean
-        get() = lkmMode == true && !isLateLoadMode
-
     val showCustomLkmBadge: Boolean
         get() = lkmMode == true && !isLkmBundled
 
@@ -63,5 +45,4 @@ data class HomeUiState(
 data class HomeActions(
     val onInstallClick: () -> Unit,
     val onOpenUrl: (String) -> Unit,
-    val onJailbreakClick: () -> Unit = {},
 )

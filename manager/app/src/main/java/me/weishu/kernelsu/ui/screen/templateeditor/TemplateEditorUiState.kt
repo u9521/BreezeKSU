@@ -10,11 +10,7 @@ data class TemplateEditorUiState(
     val initialTemplate: TemplateInfo,
     val readOnly: Boolean,
     val isCreation: Boolean,
-    val idErrorHint: String = "",
-) {
-    val titleSummary: String
-        get() = initialTemplate.id + if (initialTemplate.author.isNotEmpty()) "@${initialTemplate.author}" else ""
-}
+)
 
 @Immutable
 data class TemplateEditorActions(

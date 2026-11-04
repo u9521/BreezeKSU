@@ -73,8 +73,6 @@
     <string name="settings_umount_modules_default">Разкачи модули</string>
     <string name="settings_umount_modules_default_summary">Глобалната стойност по подразбиране за „Разкачи модули“ в профила на приложението. Ако е активирана, ще премахне всички модификации на модулите в системата за приложения, които нямат зададен профил.</string>
     <string name="profile_umount_modules_summary">Активирането на тази опция ще позволи на KernelSU да възстанови всички модифицирани файлове от модулите за това приложение.</string>
-    <string name="profile_selinux_domain">Домейн</string>
-    <string name="profile_selinux_rules">Правила</string>
     <string name="module_update">Актуализиране</string>
     <string name="module_downloading">Изтегляне на модул: %s</string>
     <string name="module_start_downloading">Започни изтегляне: %s</string>
@@ -82,7 +80,6 @@
     <string name="launch_app">Стартирай</string>
     <string name="force_stop_app">Принудително спиране</string>
     <string name="restart_app">Радтартирай</string>
-    <string name="failed_to_update_sepolicy">Неуспешно актуализиране на SELinux правила за %s</string>
     <string name="su_not_allowed">Даването на Суперпотребителски права на %s не беше успешно</string>
     <string name="module_changelog">Списък с промени</string>
     <string name="settings_profile_template">Шаблон за профил на приложение</string>
@@ -115,11 +112,6 @@
     <string name="enable_web_debugging_summary">Може да се използва за отстраняване на грешки в WebUI. Моля активирайте само когато е необходимо.</string>
     <string name="direct_install">Директно изтегляне (Препоръчано)</string>
     <string name="select_file">Избор и закърпване на файл</string>
-    <string name="download_file">Изтегляне и закърпване на файл</string>
-    <string name="download_dialog_title">Въведете URL на изображението</string>
-    <string name="download_dialog_msg">Пълен OTA образ или фабричен образ</string>
-    <string name="download_no_boot_partition">В изображението не е намерен дял boot, init_boot или vendor_boot</string>
-    <string name="download_probe_failed">Неуспешно сканиране на изображението: %1$s</string>
     <string name="install_inactive_slot">Изтеглете в неактивния слот (След софтуерна актуализация)</string>
     <string name="install_inactive_slot_warning">Устройството ви ще бъде **ПРИНУДЕНО** да се стартира от неактивния слот след рестартиране!\nИзползвайте тази опция само след като софтуерната актуализация приключи.\nИскате ли да продължите?</string>
     <string name="install_next">Следваш</string>

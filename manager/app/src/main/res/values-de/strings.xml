@@ -29,12 +29,9 @@
     <string name="profile_namespace_inherited">Geerbt</string>
     <string name="profile_namespace_global">Global</string>
     <string name="profile_namespace_individual">Individuell</string>
-    <string name="profile_selinux_domain">Domäne</string>
     <string name="module_update">Aktualisieren</string>
     <string name="profile_umount_modules_summary">Wenn du diese Option aktivierst, kann KernelSU alle von den Modulen für diese App geänderten Dateien wiederherstellen.</string>
-    <string name="profile_selinux_rules">Regeln</string>
     <string name="module_start_downloading">Starte Download: %s</string>
-    <string name="failed_to_update_sepolicy">Aktualisieren der SELinux-Regeln schlug fehl für %s</string>
     <string name="launch_app">Starten</string>
     <string name="new_version_available">Neue Version %s verfügbar, tippen zum Aktualisieren!</string>
     <string name="force_stop_app">Stopp erzwingen</string>
@@ -105,11 +102,6 @@
     <string name="install_next">Weiter</string>
     <string name="direct_install">Direkte Installation (empfohlen)</string>
     <string name="select_file">Eine Datei auswählen und patchen</string>
-    <string name="download_file">Eine Datei herunterladen und patchen</string>
-    <string name="download_dialog_title">Bild-URL eingeben</string>
-    <string name="download_dialog_msg">Vollständiges OTA-Image oder Factory-Image</string>
-    <string name="download_no_boot_partition">Keine boot-, init_boot- oder vendor_boot-Partition im Image gefunden</string>
-    <string name="download_probe_failed">Image konnte nicht überprüft werden: %1$s</string>
     <string name="install_inactive_slot">In inaktiven Slot installieren (nach OTA)</string>
     <string name="install_inactive_slot_warning">Nach einem Neustart wird dein Gerät **GEZWUNGEN** in den derzeit inaktiven Slot zu starten!
 \nBenutze dies nur nach Fertigstellung des OTA.

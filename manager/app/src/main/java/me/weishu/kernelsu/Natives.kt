@@ -2,18 +2,19 @@ package me.weishu.kernelsu
 
 import android.os.Parcelable
 import androidx.annotation.Keep
-import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import me.weishu.kernelsu.Natives.Profile.RootProfileFlag
-import me.weishu.kernelsu.ui.util.rootAvailable
+import me.weishu.kernelsu.data.ksu.rootAvailable
 
 /**
  * @author weishu
  * @date 2022/12/8.
  */
 object Natives {
-    // minimal supported kernel version
+    // Supported kernel version floor. Kept as a comment rather than a constant so it still
+    // documents the floor without being an unused declaration; restore it to `const val` if
+    // anything ever needs to compare against it.
     // 10915: allowlist breaking change, add app profile
     // 10931: app profile struct add 'version' field
     // 10946: add capabilities
@@ -24,8 +25,6 @@ object Natives {
     // 32336: new set_sepolicy ioctl
     // 32377: add set_init_pgrp ioctl
     // 32513: add uapi version
-    const val MINIMAL_SUPPORTED_KERNEL = 32513
-
     const val KERNEL_SU_DOMAIN = "u:r:ksu:s0"
 
     const val ROOT_UID = 0
@@ -131,7 +130,6 @@ object Natives {
     }
 
     @Keep
-    @Immutable
     @Parcelize
     @Serializable
     data class Profile(
@@ -156,7 +154,6 @@ object Natives {
 
         val nonRootUseDefault: Boolean = true,
         val umountModules: Boolean = true,
-        var rules: String = "", // this field is save in ksud!!
 
         val flags: Long = FLAG_KSU_NO_NEW_PRIVS,
     ) : Parcelable {

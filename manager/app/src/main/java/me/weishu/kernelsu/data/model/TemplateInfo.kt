@@ -2,16 +2,14 @@ package me.weishu.kernelsu.data.model
 
 import android.os.Parcelable
 import android.util.Log
-import androidx.compose.runtime.Immutable
+import java.util.Locale
 import kotlinx.parcelize.Parcelize
 import me.weishu.kernelsu.Natives
 import me.weishu.kernelsu.profile.Capabilities
 import me.weishu.kernelsu.profile.Groups
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Locale
 
-@Immutable
 @Parcelize
 data class TemplateInfo(
     val id: String = "",
@@ -25,7 +23,6 @@ data class TemplateInfo(
     val groups: List<Int> = mutableListOf(),
     val capabilities: List<Int> = mutableListOf(),
     val context: String = Natives.KERNEL_SU_DOMAIN,
-    val rules: List<String> = mutableListOf(),
     val flags: List<Int> = mutableListOf(
         Natives.Profile.RootProfileFlag.NO_NEW_PRIVS.ordinal // default no new privs for new template
     )
@@ -43,7 +40,6 @@ data class TemplateInfo(
                 val namespace = templateJson.optString("namespace").takeIf { it.isNotEmpty() }
                     ?: Natives.Profile.Namespace.INHERITED.name
 
-                val rulesJsonArray = templateJson.optJSONArray("rules")
                 val templateInfo = TemplateInfo(
                     id = templateJson.getString("id"),
                     name = getLocaleString(templateJson, "name"),
@@ -60,9 +56,6 @@ data class TemplateInfo(
                         capabilitiesJsonArray, Capabilities::class.java
                     ).map { it.cap },
                     context = context,
-                    rules = rulesJsonArray?.mapCatching<String, String>({ it }, {
-                        Log.e(TAG, "ignore invalid rule: $it", it)
-                    }).orEmpty(),
                     flags = flagsJsonArray?.let {
                         getEnumOrdinals(
                             it,
@@ -153,10 +146,6 @@ data class TemplateInfo(
 
             if (template.context.isNotEmpty()) {
                 put("context", template.context)
-            }
-
-            if (template.rules.isNotEmpty()) {
-                put("rules", JSONArray(template.rules))
             }
 
             put(

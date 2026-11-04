@@ -63,8 +63,6 @@
     <string name="profile_umount_modules_summary">Activer cette option autorisera KernelSU à restaurer tous les fichiers de cette application qui ont été modifiés par les modules.</string>
     <string name="settings_umount_modules_default">Démonter par défaut les modules</string>
     <string name="settings_umount_modules_default_summary">Valeur globale par défaut pour l\'option \"Démonter les modules\" dans les profils d\'application. Lorsque l\'option est activée, les modifications apportées au système par les modules sont supprimées pour les applications qui n\'ont pas de profil défini.</string>
-    <string name="profile_selinux_domain">Domaine</string>
-    <string name="profile_selinux_rules">Règles</string>
     <string name="module_update">Mettre à jour</string>
     <string name="module_downloading">Téléchargement du module : %s</string>
     <string name="launch_app">Lancer</string>
@@ -72,7 +70,6 @@
     <string name="module_start_downloading">Début du téléchargement de : %s</string>
     <string name="force_stop_app">Forcer l\'arrêt</string>
     <string name="restart_app">Relancer l\'application</string>
-    <string name="failed_to_update_sepolicy">Échec de la mise à jour des règles SELinux pour %s</string>
     <string name="home_lkm_update_available">Une version plus récente du LKM intégré est disponible. Appuyez pour mettre à jour.</string>
     <string name="home_lkm_custom">Personnalisé</string>
     <string name="require_manager_version">Mise à jour du gestionnaire requise.</string>
@@ -106,11 +103,6 @@
     <string name="open">Ouvrir</string>
     <string name="direct_install">Installation directe (recommandé)</string>
     <string name="select_file">Sélectionner un fichier et le patcher</string>
-    <string name="download_file">Télécharger un fichier et le patcher</string>
-    <string name="download_dialog_title">Saisir l\'URL de l\'image</string>
-    <string name="download_dialog_msg">Image OTA complète ou image d\'usine</string>
-    <string name="download_no_boot_partition">Aucune partition boot, init_boot ou vendor_boot trouvée dans l\'image</string>
-    <string name="download_probe_failed">Échec de l\'analyse de l\'image : %1$s</string>
     <string name="install_inactive_slot">Installer dans l\'emplacement inactif (après OTA)</string>
     <string name="install_inactive_slot_warning">Votre appareil sera **FORCÉ** à démarrer sur l\'emplacement inactif actuel après un redémarrage ! \nN\'utilisez cette option qu\'une fois la mise à jour OTA terminée. \nContinuer ?</string>
     <string name="install_next">Suivant</string>
@@ -209,8 +201,6 @@
     <string name="color_amber">Ambre</string>
     <string name="reboot_soft">Redémarrage logiciel</string>
     <string name="jailbreak_mode">Mode Jailbreak</string>
-    <string name="home_jailbreak">Jailbreak</string>
-    <string name="jailbreak_timeout">Le jailbreak a peut-être échoué, consultez les journaux</string>
     <string name="settings_enable_predictive_back">Geste de retour prédictif</string>
     <string name="settings_enable_predictive_back_summary">Activez la prise en charge du geste de retour prédictif.</string>
     <string name="home_pr_build_warning">Ceci est une version de débogage issue d\'une PR. Ne l\'utilisez PAS en production !</string>
@@ -231,8 +221,6 @@
     <string name="settings_enable_glass">Liquid Glass</string>
     <string name="settings_enable_glass_summary">Activez l\'effet Liquid Glass pour la barre inférieure flottante</string>
     <string name="show_only_primary_user_apps">Afficher seulement les applis de l\'utilisateur principal</string>
-    <string name="settings_auto_jailbreak">Jailbreak automatique</string>
-    <string name="settings_auto_jailbreak_summary">Utilisez automatiquement Magica pour l\'élévation de privilèges lorsque SELinux permissif est détecté au démarrage de l\'appareil. L\'autorisation de démarrage automatique devra être accordé à cette application.</string>
     <string name="allow_shell">Toujours accorder l\'accès root à Shell</string>
     <string name="allow_shell_summary">Autorisez toujours adb shell à appeler su. N\'activez cette option qu\'en cas de nécessité absolue.</string>
     <string name="enable_adb">Forcer l\'activation d\'adb au boot</string>

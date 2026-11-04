@@ -43,8 +43,6 @@
     <string name="profile_umount_modules">Atjungti modulius</string>
     <string name="settings_umount_modules_default">Atjungti modulius pagal numatytuosius parametrus</string>
     <string name="profile_umount_modules_summary">Įjungus šią parinktį, KernelSU galės atkurti visus modulių modifikuotus failus šiai programai.</string>
-    <string name="profile_selinux_domain">Domenas</string>
-    <string name="profile_selinux_rules">Taisyklės</string>
     <string name="module_update">Atnaujinti</string>
     <string name="module_downloading">Atsisiunčiamas modulis: %s</string>
     <string name="module_start_downloading">Pradedamas atsisiuntimas: %s</string>
@@ -52,7 +50,6 @@
     <string name="launch_app">Paleisti</string>
     <string name="force_stop_app">Priversti sustoti</string>
     <string name="restart_app">Perkrauti</string>
-    <string name="failed_to_update_sepolicy">Nepavyko atnaujinti SELinux taisyklių: %s</string>
     <string name="home">Namai</string>
     <string name="home_not_installed">Neįdiegta</string>
     <string name="home_unsupported_reason">KernelSU dabar palaiko tik GKI branduolius</string>

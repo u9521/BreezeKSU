@@ -36,7 +36,6 @@
     <string name="home_support_content">KernelSU ಉಚಿತ ಮತ್ತು ಮುಕ್ತ ಮೂಲವಾಗಿದೆ ಮತ್ತು ಯಾವಾಗಲೂ ಇರುತ್ತದೆ. ಆದಾಗ್ಯೂ ನೀವು ದೇಣಿಗೆ ನೀಡುವ ಮೂಲಕ ನೀವು ಕಾಳಜಿ ವಹಿಸುತ್ತೀರಿ ಎಂದು ನಮಗೆ ತೋರಿಸಬಹುದು.</string>
     <string name="uninstall">ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್</string>
     <string name="profile_namespace">ಮೌಂಟ್ ನೇಮ್‌ಸ್ಪೇಸ್</string>
-    <string name="profile_selinux_rules">ನಿಯಮಗಳು</string>
     <string name="profile_groups">ಗುಂಪುಗಳು</string>
     <string name="module">ಮಾಡ್ಯೂಲ್</string>
     <string name="module_author">ಲೇಖಕ</string>
@@ -47,7 +46,6 @@
     <string name="home_selinux_status">SELinux ಸ್ಥಿತಿ</string>
     <string name="module_version">ವರ್ಷನ್</string>
     <string name="home_unsupported">ಬೆಂಬಲಿತವಾಗಿಲ್ಲ</string>
-    <string name="profile_selinux_domain">ಡೊಮೇನ್</string>
     <string name="home">ಮನೆ</string>
     <string name="profile_custom">ಕಸ್ಟಮ್</string>
     <string name="profile_template">ಟೆಂಪ್ಲೇಟ್</string>

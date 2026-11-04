@@ -61,7 +61,6 @@
     <string name="profile_default">預設</string>
     <string name="profile_custom">自訂</string>
     <string name="profile_capabilities">權限</string>
-    <string name="profile_selinux_rules">規則</string>
     <string name="module_downloading">正在下載模組：%s</string>
     <string name="restart_app">重新執行</string>
     <string name="profile_template">範本</string>
@@ -72,13 +71,11 @@
     <string name="profile_namespace_individual">個體</string>
     <string name="profile_groups">群組</string>
     <string name="profile_selinux_context">SELinux 上下文</string>
-    <string name="profile_selinux_domain">定域</string>
     <string name="module_update">更新</string>
     <string name="module_start_downloading">準備下載模組：%s</string>
     <string name="new_version_available">版本 %s 現已開放下載，點選開始更新。</string>
     <string name="launch_app">開始執行</string>
     <string name="force_stop_app">強制停止</string>
-    <string name="failed_to_update_sepolicy">無法為「%s」更新 SELinux 規則</string>
     <string name="module_changelog">更新說明</string>
     <string name="app_profile_template_id_invalid">範本編號無效</string>
     <string name="app_profile_template_create">建立範本</string>
@@ -112,11 +109,6 @@
     <string name="settings_pager_gesture_cross_axis">跨軸攔截</string>
     <string name="settings_pager_gesture_ios_like">iOS 風格</string>
     <string name="select_file">選擇並修補檔案</string>
-    <string name="download_file">下載並修補檔案</string>
-    <string name="download_dialog_title">輸入連結</string>
-    <string name="download_dialog_msg">完整 OTA 映像或原廠映像</string>
-    <string name="download_no_boot_partition">映像中找不到 boot、init_boot 或 vendor_boot 分割區</string>
-    <string name="download_probe_failed">偵測映像失敗：%1$s</string>
     <string name="install_inactive_slot">安裝至非作用擴充槽（適用於 OTA 更新過後）</string>
     <string name="install_inactive_slot_warning">你的裝置將在重新啟動時**強制**開機至目前的非作用擴充槽！\n確保僅在 OTA 更新過後選擇此選項。\n是否繼續？</string>
     <string name="direct_install">直接安裝（推薦）</string>

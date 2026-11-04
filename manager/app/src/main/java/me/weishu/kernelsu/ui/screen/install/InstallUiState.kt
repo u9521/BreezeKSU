@@ -1,7 +1,8 @@
 package me.weishu.kernelsu.ui.screen.install
 
 import androidx.compose.runtime.Immutable
-import me.weishu.kernelsu.ui.util.LkmSelection
+import me.weishu.kernelsu.data.ksu.LkmSelection
+import me.weishu.kernelsu.ui.util.UiMessage
 
 @Immutable
 internal data class InstallUiState(
@@ -9,8 +10,6 @@ internal data class InstallUiState(
     val lkmSelection: LkmSelection,
     val partitionSelectionIndex: Int,
     val displayPartitions: List<String>,
-    val remotePartitionSelectionIndex: Int,
-    val remoteDisplayPartitions: List<String>,
     val currentKmi: String,
     val slotSuffix: String,
     val installMethodOptions: List<InstallMethod>,
@@ -20,13 +19,15 @@ internal data class InstallUiState(
     val enableAdb: Boolean,
     val forceBackup: Boolean,
     val canForceBackup: Boolean,
+    /** One-shot feedback shown by the scaffold; [InstallScreenActions.onMessageShown] clears it. */
+    val message: UiMessage? = null,
+    val showChooseKmiDialog: Boolean = false,
 )
 
 @Immutable
 internal data class InstallScreenActions(
     val onBack: () -> Unit,
     val onSelectMethod: (InstallMethod) -> Unit,
-    val onDownloadFile: () -> Unit,
     val onSelectBootImage: () -> Unit,
     val onUploadLkm: () -> Unit,
     val onClearLkm: () -> Unit,
@@ -36,4 +37,7 @@ internal data class InstallScreenActions(
     val onSelectAllowShell: (Boolean) -> Unit,
     val onSelectEnableAdb: (Boolean) -> Unit,
     val onSelectForceBackup: (Boolean) -> Unit,
+    val onMessageShown: (Long) -> Unit,
+    val onDismissChooseKmi: () -> Unit,
+    val onSelectKmi: (String?) -> Unit,
 )

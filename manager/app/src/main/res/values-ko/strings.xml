@@ -49,7 +49,6 @@
     <string name="home_learn_kernelsu_url">https://kernelsu.org/guide/what-is-kernelsu.html</string>
     <string name="settings_umount_modules_default_summary">앱 프로필 메뉴의 \"모듈 마운트 해제\" 설정에 대한 전역 기본값을 지정합니다. 활성화하면 개별 프로필이 설정되지 않은 앱에는 시스템에 대한 모듈의 모든 수정 사항이 제외됩니다.</string>
     <string name="restart_app">다시 시작</string>
-    <string name="profile_selinux_rules">규칙</string>
     <string name="new_version_available">새 %s 버전을 사용할 수 있습니다, 여기를 눌러 업그레이드하세요!</string>
     <string name="module_start_downloading">다운로드 시작: %s</string>
     <string name="force_stop_app">강제 중지</string>
@@ -70,9 +69,7 @@
     <string name="profile_umount_modules_summary">이 옵션이 활성화되면 KernelSU는 이 앱에 대한 모듈의 모든 수정 사항을 복구합니다.</string>
     <string name="module_update">업데이트</string>
     <string name="module_downloading">모듈 다운로드 중: %s</string>
-    <string name="profile_selinux_domain">도메인</string>
     <string name="launch_app">실행</string>
-    <string name="failed_to_update_sepolicy">%s 앱에 대한 SELinux 규칙 업데이트 실패</string>
     <string name="save_log">로그 저장</string>
     <string name="module_changelog">업데이트 내역</string>
     <string name="enable_web_debugging_summary">WebUI 디버깅에 사용 가능, 필요한 경우에만 활성화하세요.</string>
@@ -118,11 +115,6 @@
     <string name="app_profile_template_view">템플릿 보기</string>
     <string name="app_profile_template_export_empty">내보낼 로컬 템플릿을 찾을 수 없습니다!</string>
     <string name="select_file">파일 선택 및 패치</string>
-    <string name="download_file">파일 다운로드 및 패치</string>
-    <string name="download_dialog_title">이미지 URL 입력</string>
-    <string name="download_dialog_msg">전체 OTA 이미지 또는 팩토리 이미지</string>
-    <string name="download_no_boot_partition">이미지에서 boot, init_boot 또는 vendor_boot 파티션을 찾을 수 없습니다</string>
-    <string name="download_probe_failed">이미지 검사 실패: %1$s</string>
     <string name="direct_install">직접 설치 (권장)</string>
     <string name="install_inactive_slot">비활성 슬롯에 설치 (OTA 이후)</string>
     <string name="settings_restore_stock_image">제조사 이미지로 복구</string>
