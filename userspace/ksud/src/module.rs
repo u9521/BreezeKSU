@@ -43,11 +43,7 @@ const INSTALL_MODULE_SCRIPT: &str = concatcp!(
     "\n"
 );
 
-/// Validate module_id format and security
-/// Module ID must match: ^[a-zA-Z][a-zA-Z0-9._-]+$
-/// - Must start with a letter (a-zA-Z)
-/// - Followed by one or more alphanumeric, dot, underscore, or hyphen characters
-/// - Minimum length: 2 characters
+/// The pattern below is also the one the error message quotes; change one, change both.
 pub fn validate_module_id(module_id: &str) -> Result<()> {
     let re = Regex::new(r"^[a-zA-Z][a-zA-Z0-9._-]+$")?;
     if re.is_match(module_id) {
@@ -615,8 +611,10 @@ fn regenerate_preinit_rc(
     Ok(())
 }
 
-/// Rebuild what the kernel picks up from the preinit partition on the next boot: modules.rc and
-/// the modules' preinit dirs.
+/// Rebuild what the kernel picks up on the next boot.
+///
+/// Only the initrc half still does work: the kernel splices `modules.rc` into init.rc. The name
+/// outlived its preinit half; it stays because three call sites would otherwise have to move.
 pub fn regenerate_preinit() -> Result<()> {
     let preinit_str = preinit_ksu_dir();
     let con = preinit_con(preinit_str);

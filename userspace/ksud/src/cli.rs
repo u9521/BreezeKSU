@@ -3,7 +3,7 @@ use clap::Parser;
 use std::path::PathBuf;
 
 use android_logger::Config;
-use log::{LevelFilter, error, info};
+use log::{LevelFilter, info};
 
 use crate::boot_patch::{BootPatchArgs, BootRestoreArgs};
 use crate::lkm_image::BootPatchV2Args;
@@ -44,7 +44,7 @@ enum Commands {
 
     /// Load kernelsu.ko and execute late-load stage scripts
     LateLoad {
-        /// Use adb root to execute late-load for jailbreaking by Magica
+        /// Accepted for compatibility; does nothing (Magica was removed from the fork)
         #[arg(long, default_missing_value = "5555", num_args = 0..=1)]
         magica: Option<u16>,
 
@@ -52,7 +52,7 @@ enum Commands {
         #[arg(long)]
         allow_shell: bool,
 
-        /// Restore adb properties after magica late-load
+        /// Accepted for compatibility; does nothing (Magica was removed from the fork)
         #[arg(long)]
         post_magica: bool,
 
@@ -665,18 +665,14 @@ pub fn run() -> Result<()> {
             kmi,
             package_name,
         } => {
-            if let Some(port) = magica {
-                return crate::magica::run(port, &package_name, allow_shell).map_err(|e| {
-                    error!("Error running magica: {e}");
-                    e
-                });
+            // Accepted and ignored rather than removed from the parser, so an older Manager that
+            // still passes them gets a plain late-load instead of a usage error.
+            if magica.is_some() {
+                info!("--magica accepted but ignored: Magica is not part of this build");
             }
             let result = crate::late_load::run(&package_name, kmi, allow_shell);
             if post_magica {
-                info!("Restoring adb properties (post-magica cleanup)...");
-                if let Err(e) = crate::magica::disable_adb_root() {
-                    error!("disable adb root failed: {e}");
-                }
+                info!("--post-magica accepted but ignored: nothing to restore");
             }
             result
         }
