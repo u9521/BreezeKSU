@@ -64,8 +64,6 @@
     <string name="settings_umount_modules_default">Ontkoppel standaard de modules</string>
     <string name="settings_umount_modules_default_summary">De globale standaardwaarde voor \"Umount modules\" in App Profile. Als dit is ingeschakeld, worden alle modulewijzigingen in het systeem verwijderd voor apps waarvoor geen profiel is ingesteld.</string>
     <string name="profile_umount_modules_summary">Met deze optie ingeschakeld zal KernelSU toelaten om alle gewijzigde bestanden door de modules voor deze app te herstellen.</string>
-    <string name="profile_selinux_domain">Domein</string>
-    <string name="profile_selinux_rules">Regels</string>
     <string name="module_update">Update</string>
     <string name="module_downloading">Downloaden van module: %s</string>
     <string name="new_version_available">Nieuwe versie %s is beschikbaar,klik om te upgraden!</string>
@@ -73,7 +71,6 @@
     <string name="force_stop_app">Forceer stop</string>
     <string name="restart_app">Herstart</string>
     <string name="module_start_downloading">Begin met downloaden: %s</string>
-    <string name="failed_to_update_sepolicy">Kan SELinux-regels niet bijwerken voor %s</string>
     <string name="home_lkm_update_available">Er is een nieuwere versie van de ingebouwde LKM beschikbaar. Tik om bij te werken.</string>
     <string name="home_lkm_custom">Aangepast</string>
     <string name="require_manager_version">Managerupdate vereist.</string>
@@ -106,11 +103,6 @@
     <string name="settings_check_update_summary">Controleer automatisch op updates bij het openen van de app.</string>
     <string name="direct_install">Directe installatie (aanbevolen)</string>
     <string name="select_file">Kies en patch een bestand</string>
-    <string name="download_file">Download en patch een bestand</string>
-    <string name="download_dialog_title">Afbeeldings-URL invoeren</string>
-    <string name="download_dialog_msg">Volledige OTA-image of fabrieksimage</string>
-    <string name="download_no_boot_partition">Geen boot-, init_boot- of vendor_boot-partitie gevonden in de image</string>
-    <string name="download_probe_failed">Kan image niet controleren: %1$s</string>
     <string name="grant_root_failed">Kan geen root verlenen!</string>
     <string name="select_file_tip">%1$s partitie-image wordt aanbevolen</string>
     <string name="install_next">Naast</string>

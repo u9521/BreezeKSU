@@ -164,6 +164,20 @@ def run_cmd(args: List[str], fail_msg: str) -> None:
         raise RuntimeError(f"{fail_msg}\nCommand: {' '.join(args)}\n{output}")
 
 
+def resolve_apk(apk_arg: Optional[str], app_build_type: str) -> Path:
+    """Use the explicit `--apk` when given; otherwise fall back to the newest build output.
+
+    Split builds produce one APK per ABI in the same directory, so "the latest" is ambiguous by
+    design; the CI passes `--apk` per file and this fallback stays for local one-off runs.
+    """
+    if apk_arg:
+        path = Path(apk_arg).resolve()
+        if not path.is_file():
+            raise FileNotFoundError(f"APK not found: {path}")
+        return path
+    return find_latest_apk(app_build_type)
+
+
 def find_latest_apk(app_build_type: str) -> Path:
     pattern = workspace_root() / "manager" / "app" / "build" / "outputs" / "apk" / app_build_type
     apks = sorted(pattern.glob("*.apk"), key=lambda p: p.stat().st_mtime)
@@ -320,7 +334,7 @@ def do_repack(args: argparse.Namespace) -> int:
         file_cfg = {}
     cfg = merge_config(file_cfg, args)
 
-    apk = find_latest_apk(cfg["app_build_type"])
+    apk = resolve_apk(args.apk, cfg["app_build_type"])
     arch_filters = cfg.get("arch", [])
     if not arch_filters:
         inferred = collect_existing_arches(apk)
@@ -441,6 +455,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     repack = subparsers.add_parser("repack", help="Repack and resign APK")
     repack.add_argument("-c", "--config", help="Path to jsonc config file")
+    repack.add_argument("-i", "--apk", help="Input APK path (default: newest under the build output)")
     repack.add_argument("-b", "--app-build-type", help="APK build type override, e.g. debug/release")
     repack.add_argument("-t", "--ksud-build-type", help="ksud build type override, e.g. debug/release")
     repack.add_argument(

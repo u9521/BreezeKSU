@@ -34,8 +34,6 @@ Csatlakozzon a %2$s csatornánkhoz</string>
     <string name="profile_selinux_context">SELinux kontextus</string>
     <string name="settings_umount_modules_default">Modulok leválasztása alapértelmezetten</string>
     <string name="profile_umount_modules_summary">Ha engedélyezi ezt az opciót, a KernelSU visszaállíthatja az alkalmazás moduljai által módosított fájlokat.</string>
-    <string name="profile_selinux_domain">Tartomány</string>
-    <string name="profile_selinux_rules">Szabályok</string>
     <string name="module_update">Frissítés</string>
     <string name="module_downloading">Modul letöltése: %s</string>
     <string name="module_start_downloading">Letöltés indítása: %s</string>
@@ -73,7 +71,6 @@ Csatlakozzon a %2$s csatornánkhoz</string>
     <string name="failed_to_update_app_profile">Nem sikerült frissíteni az App Profilt ehhez: %s</string>
     <string name="settings_umount_modules_default_summary">A \"Modulok leválasztása\" globális alapértelmezett értéke az App Profile-ban. Ha engedélyezve van, eltávolít minden modulmódosítást a rendszerből azon alkalmazások esetében, amelyeknek nincs profilja beállítva.</string>
     <string name="new_version_available">Elérhető az új, %s verzió, kattintson a frissítéshez.</string>
-    <string name="failed_to_update_sepolicy">Nem sikerült frissíteni az SELinux szabályokat a következőhöz: %s</string>
     <string name="home_lkm_update_available">Elérhető a beépített LKM újabb verziója. Érintse meg a frissítéshez.</string>
     <string name="home_lkm_custom">Egyedi</string>
     <string name="require_manager_version">A menedzser frissítése szükséges.</string>
@@ -117,11 +114,6 @@ Csatlakozzon a %2$s csatornánkhoz</string>
     <string name="grant_root_failed">A root jog megadása sikertelen!</string>
     <string name="install_inactive_slot">Telepítés inaktív helyre (OTA után)</string>
     <string name="select_file">Fájl kiválasztása és módosítása</string>
-    <string name="download_file">Fájl letöltése és módosítása</string>
-    <string name="download_dialog_title">Adja meg a kép URL-jét</string>
-    <string name="download_dialog_msg">Teljes OTA-kép vagy gyári kép</string>
-    <string name="download_no_boot_partition">A képen nem található boot, init_boot vagy vendor_boot partíció</string>
-    <string name="download_probe_failed">A kép vizsgálata sikertelen: %1$s</string>
     <string name="settings_uninstall_permanent_message">A KernelSU eltávolítása (root és az összes modul) teljesen és véglegesen.</string>
     <string name="settings_restore_stock_image">Eredeti képfájl visszaállítása</string>
     <string name="action">Művelet</string>

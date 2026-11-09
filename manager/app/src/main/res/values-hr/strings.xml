@@ -4,7 +4,6 @@
     <string name="send_log">Pošaljite izvještaje</string>
     <string name="safe_mode">Sigurnosni mod</string>
     <string name="reboot_to_apply">Ponovno pokrenite da bi proradilo</string>
-    <string name="failed_to_update_sepolicy">Nije uspjelo ažuriranje SELinux pravila za %s</string>
     <string name="home">Početna</string>
     <string name="home_not_installed">Nije instalirano</string>
     <string name="home_working_version">Verzija: %s</string>
@@ -68,9 +67,7 @@
     <string name="require_kernel_version_gki">Potrebno je ažurirati kernel.</string>
     <string name="settings_umount_modules_default">Umontiraj module prema zadanim postavkama</string>
     <string name="settings_umount_modules_default_summary">Globalna zadana vrijednost za \"Umontiraj module\" u profilu aplikacije. Ako je omogućeno, uklonit će sve modifikacije modula sustava za aplikacije koje nemaju postavljen profil.</string>
-    <string name="profile_selinux_domain">Domena</string>
     <string name="profile_umount_modules_summary">Omogućavanje ove opcije omogućit će KernelSU-u da vrati sve izmijenjene datoteke od strane modula za ovu aplikaciju.</string>
-    <string name="profile_selinux_rules">Pravila</string>
     <string name="module_update">Ažuriranje</string>
     <string name="module_downloading">Preuzimanje module: %s</string>
     <string name="module_start_downloading">Započnite sa preuzimanjem: %s</string>
@@ -111,11 +108,6 @@
     <string name="enable_web_debugging_summary">Može se koristiti za otklanjanje pogrešaka u WebUI-ju. Omogućite samo kada je potrebno.</string>
     <string name="direct_install">Izravna instalacija (preporučeno)</string>
     <string name="select_file">Odaberite datoteku i patchirajte je</string>
-    <string name="download_file">Preuzmite datoteku i patchirajte je</string>
-    <string name="download_dialog_title">Unesite URL slike</string>
-    <string name="download_dialog_msg">Potpuna OTA slika ili tvornička slika</string>
-    <string name="download_no_boot_partition">Particija boot, init_boot ili vendor_boot nije pronađena u slici</string>
-    <string name="download_probe_failed">Neuspješno ispitivanje slike: %1$s</string>
     <string name="install_inactive_slot">Instaliraj u neaktivni utor (nakon OTA)</string>
     <string name="install_inactive_slot_warning">Vaš će uređaj biti **PRISILNO** pokrenuti se u trenutno neaktivni utor nakon ponovnog pokretanja!\nKoristite ovu opciju tek nakon što je OTA završen.\nNastaviti?</string>
     <string name="install_next">Dalje</string>

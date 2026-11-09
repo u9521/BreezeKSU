@@ -44,7 +44,6 @@
     <string name="profile_namespace">טעינת מרחב שמות</string>
     <string name="module_install">התקנה</string>
     <string name="home_click_to_install">לחץ להתקנה</string>
-    <string name="profile_selinux_rules">כללים</string>
     <string name="profile_groups">קבוצה</string>
     <string name="module">מודולים</string>
     <string name="module_author">יוצר</string>
@@ -55,7 +54,6 @@
     <string name="home_selinux_status">סטטוס SELinux</string>
     <string name="module_version">גרסה</string>
     <string name="home_unsupported">אינו נתמך</string>
-    <string name="profile_selinux_domain">תחום</string>
     <string name="home">בית</string>
     <string name="profile_custom">מותאם אישית</string>
     <string name="profile_template">תבנית</string>
@@ -74,7 +72,6 @@
     <string name="home_not_installed">לא מותקן</string>
     <string name="failed_to_update_app_profile">נכשל עדכון פרופיל האפליקציה עבור %s</string>
     <string name="home_learn_kernelsu_url">https://kernelsu.org/guide/what-is-kernelsu.html</string>
-    <string name="failed_to_update_sepolicy">נכשל עדכון כללי SELinux עבור: %s</string>
     <string name="reboot_bootloader">הפעלה מחדש לבוטלאודר</string>
     <string name="about_source_code">ראה את קוד המקור ב%1$s<br/>הצטרף אלינו %2$s בערוץ</string>
     <string name="home_manager_version">גרסת מנהל</string>

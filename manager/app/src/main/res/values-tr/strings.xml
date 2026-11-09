@@ -69,8 +69,6 @@
     <string name="settings_umount_modules_default">Varsayılan olarak modüllerin bağlantısını kes</string>
     <string name="settings_umount_modules_default_summary">Uygulama profilindeki \"Modüllerin bağlantısını kes\" seçeneği için varsayılan değer. Etkinleştirilirse, profil ayarı yapılmamış uygulamalar için modüllerin sistemde yaptığı tüm değişiklikler kaldırılacaktır.</string>
     <string name="profile_umount_modules_summary">Bu seçeneği etkinleştirmek, KernelSU\'nun bu uygulama için modüller tarafından değiştirilen dosyaları geri yüklemesine izin verir.</string>
-    <string name="profile_selinux_domain">İsim alanı</string>
-    <string name="profile_selinux_rules">Kurallar</string>
     <string name="module_update">Güncelle</string>
     <string name="module_downloading">Modül indiriliyor: %s</string>
     <string name="module_start_downloading">İndirme başladı: %s</string>
@@ -78,7 +76,6 @@
     <string name="launch_app">Uygulamayı başlat</string>
     <string name="force_stop_app">Uygulamayı durmaya zorla</string>
     <string name="restart_app">Uygulamayı yeniden başlat</string>
-    <string name="failed_to_update_sepolicy">%s için SELinux kuralları güncellenemedi</string>
     <string name="module_changelog">Değişiklik geçmişi</string>
     <string name="settings_profile_template">Uygulama Profili şablonu</string>
     <string name="settings_profile_template_summary">Yerel ve çevrimiçi uygulama profili şablonlarını yönetin.</string>
@@ -107,11 +104,6 @@
     <string name="enable_web_debugging_summary">Web kullanıcı arayüzünde hata ayıklamak için kullanılabilir, lütfen yalnızca gerektiğinde etkinleştirin.</string>
     <string name="direct_install">Doğrudan kur (Tavsiye edilen)</string>
     <string name="select_file">Bir dosya seçin ve yamalayın</string>
-    <string name="download_file">Bir dosya indirin ve yamalayın</string>
-    <string name="download_dialog_title">Görüntü URL\'sini girin</string>
-    <string name="download_dialog_msg">Tam OTA görüntüsü veya fabrika görüntüsü</string>
-    <string name="download_no_boot_partition">Görüntüde boot, init_boot veya vendor_boot bölümü bulunamadı</string>
-    <string name="download_probe_failed">Görüntü incelenemedi: %1$s</string>
     <string name="install_inactive_slot">Etkin olmayan yuvaya kur (OTA\'dan sonra)</string>
     <string name="install_inactive_slot_warning">Cihazınız geçerli etkin olmayan yuvaya **ZORLA** yeniden başlatılacaktır!
 \nBu seçeneği yalnızca OTA tamamlandıktan sonra kullanın.
@@ -149,8 +141,6 @@
     <string name="settings_kernel_umount_summary">KernelSU tarafından kontrol edilen çekirdek seviyesinde bağlantı kesme davranışı.</string>
     <string name="reboot_soft">Soft restart</string>
     <string name="jailbreak_mode">Jailbreak modu</string>
-    <string name="home_jailbreak">Jailbreak</string>
-    <string name="jailbreak_timeout">Jailbreak işlemi başarısız olmuş olabilir, lütfen günlükleri kontrol edin</string>
     <string name="safe_mode_module_disabled">Güvenli modda modül yükleme devre dışı bırakılmıştır</string>
     <string name="module_action_success">Modül işlemi başarıyla gerçekleştirildi.</string>
     <string name="app_profile_affects_following_apps">Aşağıdaki uygulamaları etkiler</string>
@@ -234,8 +224,6 @@
     <string name="settings_enable_glass">Liquid glass</string>
     <string name="settings_enable_glass_summary">Yüzen alt çubuk için liquid glass efektini etkinleştir</string>
     <string name="show_only_primary_user_apps">Yalnızca birincil kullanıcı uygulamalarını göster</string>
-    <string name="settings_auto_jailbreak">Otomatik jailbreak</string>
-    <string name="settings_auto_jailbreak_summary">Önyükleme sırasında Permissive SELinux algılandığında, ayrıcalıkları yükseltmek için otomatik olarak Magica kullanılır. Bunun için bu uygulamaya otomatik başlatma izni verilmesi gerekir.</string>
     <string name="allow_shell">Shell\'e her zaman root erişimi ver</string>
     <string name="allow_shell_summary">adb shell\'in su komutunu çalıştırmasına her zaman izin verin. Bu seçeneği kesinlikle gerekli olmadıkça etkinleştirmeyin.</string>
     <string name="enable_adb">Önyükleme sırasında adb\'yi zorla etkinleştir</string>

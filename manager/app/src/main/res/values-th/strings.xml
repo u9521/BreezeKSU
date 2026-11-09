@@ -62,9 +62,7 @@
     <string name="profile_umount_modules">Umount โมดูล</string>
     <string name="failed_to_update_app_profile">ไม่สามารถอัปเดตโปรไฟล์แอปสำหรับ %s ได้</string>
     <string name="settings_umount_modules_default">Umount โมดูลตามค่าเริ่มต้น</string>
-    <string name="profile_selinux_domain">โดเมน</string>
     <string name="module_update">อัปเดต</string>
-    <string name="profile_selinux_rules">กฎ</string>
     <string name="module_downloading">กำลังดาวน์โหลดโมดูล: %s</string>
     <string name="module_start_downloading">กำลังเริ่มดาวน์โหลด: %s</string>
     <string name="new_version_available">เวอร์ชัน %s พร้อมใช้งาน คลิกเพื่ออัปเกรด !</string>
@@ -72,7 +70,6 @@
     <string name="restart_app">รีสตาร์ท</string>
     <string name="settings_umount_modules_default_summary">หากเปิดใช้งานค่าเริ่มต้นโดยทั่วไปสำหรับ \"Umount โมดูล\" ในโปรไฟล์แอป จะเป็นการลบการแก้ไขโมดูลทั้งหมดในระบบสำหรับแอปพลิเคชันที่ไม่มีการตั้งค่าโปรไฟล์</string>
     <string name="launch_app">เปิด</string>
-    <string name="failed_to_update_sepolicy">ไม่สามารถอัปเดตกฎ SElinux สำหรับ %s</string>
     <string name="home_lkm_update_available">มี LKM ในตัวเวอร์ชันใหม่กว่า แตะเพื่ออัปเดต</string>
     <string name="home_lkm_custom">กำหนดเอง</string>
     <string name="require_manager_version">จำเป็นต้องอัปเดตตัวจัดการ</string>
@@ -106,11 +103,6 @@
     <string name="select_kmi">เลือก KMI</string>
     <string name="install_next">ต่อไป</string>
     <string name="select_file">เลือกไฟล์และแพตช์</string>
-    <string name="download_file">ดาวน์โหลดไฟล์และแพตช์</string>
-    <string name="download_dialog_title">ป้อน URL ของอิมเมจ</string>
-    <string name="download_dialog_msg">อิมเมจ OTA เต็มรูปแบบหรืออิมเมจโรงงาน</string>
-    <string name="download_no_boot_partition">ไม่พบพาร์ติชัน boot, init_boot หรือ vendor_boot ในอิมเมจ</string>
-    <string name="download_probe_failed">ไม่สามารถตรวจสอบอิมเมจได้: %1$s</string>
     <string name="install_inactive_slot">ติดตั้งลงในสล็อตที่ไม่ใช้งาน (หลังจาก OTA)</string>
     <string name="direct_install">ติดตั้งโดยตรง (แนะนำ)</string>
     <string name="select_file_tip">แนะนำให้ใช้อิมเมจพาร์ติชัน %1$s</string>

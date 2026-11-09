@@ -1,6 +1,7 @@
 package me.weishu.kernelsu.ui.screen.executemoduleaction
 
 import androidx.compose.runtime.Immutable
+import me.weishu.kernelsu.ui.util.UiMessage
 
 @Immutable
 data class ExecuteModuleActionUiState(
@@ -10,6 +11,8 @@ data class ExecuteModuleActionUiState(
     val title: String? = null,
     /** Outcome shown below the output once complete (one-shot scripts). */
     val resultNotice: ActionResultNotice? = null,
+    /** One-shot feedback shown by the scaffold; [ExecuteModuleActionScreenActions.onMessageShown] clears it. */
+    val message: UiMessage? = null,
 )
 
 enum class ActionResultKind { SUCCESS, NOT_APPLICABLE, FAILURE }
@@ -22,4 +25,5 @@ data class ExecuteModuleActionScreenActions(
     val onBack: () -> Unit,
     val onSaveLog: () -> Unit,
     val onClose: () -> Unit = {},
+    val onMessageShown: (Long) -> Unit = {},
 )

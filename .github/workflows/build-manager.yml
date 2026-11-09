@@ -144,6 +144,9 @@ jobs:
     needs: [generate-key]
     if: always() && needs.generate-key.result == 'success'
     runs-on: ubuntu-latest
+    outputs:
+      version_name: ${{ steps.version.outputs.version_name }}
+      version_code: ${{ steps.version.outputs.version_code }}
     defaults:
       run:
         working-directory: ./manager
@@ -154,17 +157,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Read version
+        id: version
+        working-directory: .
+        run: |
+          COUNT=$(git rev-list --count HEAD)
+          test "$COUNT" -gt 1 || { echo "Shallow clone: version code would collide with published builds" >&2; exit 1; }
+          echo "version_code=$((30000 + COUNT))" >> $GITHUB_OUTPUT
+          echo "version_name=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+
       - name: Write key
         if: ${{ ( github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' )) || github.ref_type == 'tag' }}
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
+            mkdir -p keystore
             {
-              echo KEYSTORE_PASSWORD='${{ secrets.KEYSTORE_PASSWORD }}'
-              echo KEY_ALIAS='${{ secrets.KEY_ALIAS }}'
-              echo KEY_PASSWORD='${{ secrets.KEY_PASSWORD }}'
-              echo KEYSTORE_FILE='key.jks'
-            } >> gradle.properties
-            echo "${{ secrets.KEYSTORE }}" | base64 -d > key.jks
+              echo "keystoreFile=keystore/release.jks"
+              echo "keystorePassword=${{ secrets.KEYSTORE_PASSWORD }}"
+              echo "keyAlias=${{ secrets.KEY_ALIAS }}"
+              echo "keyPassword=${{ secrets.KEY_PASSWORD }}"
+            } > keystore/sign.properties
+            echo "${{ secrets.KEYSTORE }}" | base64 -d > keystore/release.jks
           fi
 
       - name: Write PR key
@@ -174,13 +187,14 @@ jobs:
           PR_KEYSTORE_PASSWORD: ${{ needs.generate-key.outputs.keystore_password }}
           PR_KEY_PASSWORD: ${{ needs.generate-key.outputs.key_password }}
         run: |
-          echo "$PR_KEYSTORE" | base64 -d > pr-key.jks
+          mkdir -p keystore
+          echo "$PR_KEYSTORE" | base64 -d > keystore/release.jks
           {
-            echo KEYSTORE_PASSWORD="$PR_KEYSTORE_PASSWORD"
-            echo KEY_ALIAS='pr-key'
-            echo KEY_PASSWORD="$PR_KEY_PASSWORD"
-            echo KEYSTORE_FILE='pr-key.jks'
-          } >> gradle.properties
+            echo "keystoreFile=keystore/release.jks"
+            echo "keystorePassword=$PR_KEYSTORE_PASSWORD"
+            echo 'keyAlias=pr-key'
+            echo "keyPassword=$PR_KEY_PASSWORD"
+          } > keystore/sign.properties
 
       - name: Setup Java
         uses: actions/setup-java@v6
@@ -205,6 +219,7 @@ jobs:
         with:
           name: manager-gradle
           path: manager/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
 
       - name: Upload mappings
         uses: actions/upload-artifact@v7
@@ -259,10 +274,13 @@ jobs:
 
       - name: Place manager apk and ksud artifacts
         run: |
+          # The build produces one APK per ABI; keep every one of them, and fail rather than
+          # silently repacking only the first file.
           mkdir -p manager/app/build/outputs/apk/release
-          APK=$(find artifacts/manager-gradle -type f -name "*.apk" | head -n 1)
-          test -n "$APK"
-          cp -f "$APK" manager/app/build/outputs/apk/release/
+          APKS=$(find artifacts/manager-gradle -type f -name "*.apk")
+          test -n "$APKS"
+          for apk in $APKS; do cp -f "$apk" manager/app/build/outputs/apk/release/; done
+          ls -l manager/app/build/outputs/apk/release/
 
           mkdir -p target/aarch64-linux-android/release
           mkdir -p target/x86_64-linux-android/release
@@ -305,18 +323,34 @@ jobs:
 
       - name: Repack and resign
         if: ${{ github.event_name == 'pull_request' || (github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')) || github.ref_type == 'tag' }}
+        env:
+          # Published architectures. riscv64 is built and kept as a CI artifact but not shipped:
+          # there is no consumer device for it, so the download would be dead weight.
+          RELEASE_ABIS: "arm64-v8a x86_64"
         run: |
-          python3 repack_apk.py repack \
-            -b release \
-            -t release \
-            -a arm64-v8a \
-            -a x86_64 \
-            -a riscv64 \
-            -K "$SIGN_KEYSTORE_FILE" \
-            -A "$SIGN_KEY_ALIAS" \
-            -P "$SIGN_KEYSTORE_PASSWORD" \
-            -S "$SIGN_KEY_PASSWORD" \
-            --strip
+          set -euo pipefail
+          VERSION="${{ needs.build-manager.outputs.version_name }}_${{ needs.build-manager.outputs.version_code }}"
+          test -n "$VERSION"
+          for apk in manager/app/build/outputs/apk/release/*.apk; do
+            abi=$(basename "$apk" | sed -E 's/.*-(arm64-v8a|x86_64|riscv64)-release\.apk/\1/')
+            test -n "$abi"
+            case " $RELEASE_ABIS " in
+              *" $abi "*) ;;
+              *) echo "Skipping $abi ($(basename "$apk"))"; continue ;;
+            esac
+            python3 repack_apk.py repack \
+              -i "$apk" \
+              -b release \
+              -t release \
+              -a "$abi" \
+              -n "BreezeKSU_$VERSION-$abi" \
+              -K "$SIGN_KEYSTORE_FILE" \
+              -A "$SIGN_KEY_ALIAS" \
+              -P "$SIGN_KEYSTORE_PASSWORD" \
+              -S "$SIGN_KEY_PASSWORD" \
+              --strip
+          done
+          ls -l dist/
 
       - name: Upload build artifact
         if: ${{ github.event_name == 'pull_request' || (github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')) || github.ref_type == 'tag' }}
@@ -338,7 +372,7 @@ jobs:
         run: |
           if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
             export VERSION=$(git rev-list --count HEAD)
-            APK=$(find ./dist -name "*.apk")
+            # ksubot takes every file after the script path, so both ABI packages ship in one post.
             pip3 install telethon
-            python3 $GITHUB_WORKSPACE/scripts/ksubot.py $APK
+            python3 $GITHUB_WORKSPACE/scripts/ksubot.py ./dist/*.apk
           fi

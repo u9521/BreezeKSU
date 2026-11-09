@@ -2,21 +2,17 @@ package me.weishu.kernelsu.data.repository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.weishu.kernelsu.data.ksu.isNetworkAvailable
+import me.weishu.kernelsu.data.ksu.listModules
+import me.weishu.kernelsu.data.ksu.sanitizeVersionString
 import me.weishu.kernelsu.data.model.Module
 import me.weishu.kernelsu.data.model.ModuleUpdateInfo
 import me.weishu.kernelsu.ksuApp
-import me.weishu.kernelsu.ui.util.isNetworkAvailable
-import me.weishu.kernelsu.ui.util.listModules
-import me.weishu.kernelsu.ui.util.module.sanitizeVersionString
 import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 
 class ModuleRepositoryImpl : ModuleRepository {
-
-    companion object {
-        private const val TAG = "ModuleRepository"
-    }
 
     override suspend fun getModules(): Result<List<Module>> = withContext(Dispatchers.IO) {
         runCatching {
@@ -41,49 +37,58 @@ class ModuleRepositoryImpl : ModuleRepository {
                         hasActionScript = obj.optBoolean("action"),
                         metamodule = (obj.optInt("metamodule") != 0) || obj.optBoolean("metamodule"),
                         actionIconPath = obj.optString("actionIcon").takeIf { it.isNotBlank() },
-                        webUiIconPath = obj.optString("webuiIcon").takeIf { it.isNotBlank() },
-                        preinit = obj.optString("preinit")
+                        webUiIconPath = obj.optString("webuiIcon").takeIf { it.isNotBlank() }
                     )
                 }.toList()
         }
     }
 
-    override suspend fun checkUpdate(module: Module): Result<ModuleUpdateInfo> = withContext(Dispatchers.IO) {
-        runCatching {
-            if (!isNetworkAvailable(ksuApp)) {
-                return@runCatching ModuleUpdateInfo.Empty
-            }
-            if (module.updateJson.isEmpty() || module.remove || module.update || !module.enabled) {
-                return@runCatching ModuleUpdateInfo.Empty
-            }
+    override suspend fun checkUpdate(module: Module): Result<ModuleUpdateInfo> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                if (!isNetworkAvailable(ksuApp)) {
+                    return@runCatching ModuleUpdateInfo.Empty
+                }
+                if (module.updateJson.isEmpty() || module.remove || module.update || !module.enabled) {
+                    return@runCatching ModuleUpdateInfo.Empty
+                }
 
-            val url = module.updateJson
-            val response = ksuApp.okhttpClient.newCall(
-                Request.Builder().url(url).build()
-            ).execute()
+                val url = module.updateJson
+                val response = ksuApp.okhttpClient.newCall(
+                    Request.Builder().url(url).build()
+                ).execute()
 
-            val result = if (response.isSuccessful) {
-                response.body.string()
-            } else {
-                ""
-            }
+                val result = if (response.isSuccessful) {
+                    response.body.string()
+                } else {
+                    ""
+                }
 
-            if (result.isEmpty()) {
-                return@runCatching ModuleUpdateInfo.Empty
-            }
+                if (result.isEmpty()) {
+                    return@runCatching ModuleUpdateInfo.Empty
+                }
 
-            val updateJson = JSONObject(result)
-            var version = updateJson.optString("version", "")
-            version = sanitizeVersionString(version)
-            val versionCode = updateJson.optInt("versionCode", 0)
-            val zipUrl = updateJson.optString("zipUrl", "")
-            val changelog = updateJson.optString("changelog", "")
+                val updateJson = JSONObject(result)
+                var version = updateJson.optString("version", "")
+                version = sanitizeVersionString(version)
+                val versionCode = updateJson.optInt("versionCode", 0)
+                val zipUrl = updateJson.optString("zipUrl", "")
+                // Blank means the module published no changelog, which is distinct from a fetch that
+                // later fails - see ModuleUpdateInfo.ChangelogUrl.
+                val changelogUrl = updateJson.optString("changelog", "").takeIf { it.isNotBlank() }
 
-            if (versionCode <= module.versionCode || zipUrl.isEmpty()) {
-                ModuleUpdateInfo.Empty
-            } else {
-                ModuleUpdateInfo(zipUrl, version, changelog, versionCode)
+                if (versionCode <= module.versionCode || zipUrl.isEmpty()) {
+                    ModuleUpdateInfo.Empty
+                } else {
+                    ModuleUpdateInfo(
+                        downloadUrl = zipUrl,
+                        version = version,
+                        changelog = changelogUrl
+                            ?.let { ModuleUpdateInfo.ChangelogUrl.Configured(it) }
+                            ?: ModuleUpdateInfo.ChangelogUrl.NotConfigured,
+                        versionCode = versionCode,
+                    )
+                }
             }
         }
-    }
 }

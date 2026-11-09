@@ -60,15 +60,12 @@
     <string name="profile_groups">グループ</string>
     <string name="profile_selinux_context">SELinux コンテキスト</string>
     <string name="failed_to_update_app_profile">%s のアプリのプロファイルの更新をできませでした</string>
-    <string name="profile_selinux_domain">ドメイン</string>
-    <string name="profile_selinux_rules">ルール</string>
     <string name="new_version_available">新しいバージョン %s が利用可能です。タップしてダウンロード!</string>
     <string name="module_update">アップデート</string>
     <string name="module_start_downloading">ダウンロードを開始: %s</string>
     <string name="launch_app">起動</string>
     <string name="force_stop_app">強制停止</string>
     <string name="restart_app">再起動</string>
-    <string name="failed_to_update_sepolicy">SELinux ルールの更新に失敗しました %s</string>
     <string name="profile_capabilities">ケーパビリティ</string>
     <string name="module_downloading">モジュールをダウンロード中: %s</string>
     <string name="profile_umount_modules_summary">このオプションを有効にすると、KernelSU はこのアプリのモジュールによって変更されたファイルを復元できるようになります。</string>
@@ -112,11 +109,6 @@
     <string name="install_inactive_slot_warning">再起動後、デバイスは**強制的に**、現在非アクティブなスロットから起動します。\nこのオプションは、OTA が完了した後にのみ使用してください。\n続行しますか？</string>
     <string name="direct_install">直接インストール (推奨)</string>
     <string name="select_file">パッチするファイルを選択</string>
-    <string name="download_file">パッチするファイルをダウンロード</string>
-    <string name="download_dialog_title">イメージ URL を入力</string>
-    <string name="download_dialog_msg">完全な OTA イメージまたはファクトリーイメージ</string>
-    <string name="download_no_boot_partition">イメージに boot、init_boot、vendor_boot パーティションが見つかりません</string>
-    <string name="download_probe_failed">イメージの検査に失敗しました: %1$s</string>
     <string name="settings_uninstall_permanent">完全にアンインストールする</string>
     <string name="settings_restore_stock_image">ストックイメージを復元</string>
     <string name="settings_uninstall_temporary">一時的にアンインストールする</string>

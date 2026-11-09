@@ -17,13 +17,6 @@ internal sealed class InstallMethod : Parcelable {
         override val summary: String?
     ) : InstallMethod()
 
-    data class DownloadFile(
-        val url: String? = null,
-        val partition: String? = null,
-        @get:StringRes override val label: Int = R.string.download_file,
-        override val summary: String?
-    ) : InstallMethod()
-
     data object DirectInstall : InstallMethod() {
         override val label: Int
             get() = R.string.direct_install
@@ -42,9 +35,7 @@ internal sealed class InstallMethod : Parcelable {
 
 fun isKoFile(context: Context, uri: Uri): Boolean {
     val seg = uri.lastPathSegment ?: ""
-    if (seg.endsWith(".ko", ignoreCase = true)) return true
-
-    return try {
+    return seg.endsWith(".ko", ignoreCase = true) || try {
         context.contentResolver.query(
             uri,
             arrayOf(OpenableColumns.DISPLAY_NAME),

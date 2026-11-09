@@ -1,0 +1,23 @@
+# R8 keep rules for the BreezeKSU Manager.
+#
+# `optimization { enable = true }` optimises everything (packageScope defaults to `**`). These rules
+# only pin what has to survive by name; they never block removal, so dead code still goes away.
+
+# Readable stack traces: keep the source file and line-table attributes R8 would otherwise drop.
+-keepattributes SourceFile,LineNumberTable
+
+# Keep the Manager's own symbol names so a release stack trace maps back to source, without
+# freezing the code (unlike -keep, dead classes and members are still removed).
+-keepnames class me.weishu.kernelsu.** { *; }
+
+# WebUI bridge: the injected JS calls these members by name through addJavascriptInterface, so
+# renaming them silently breaks every module WebUI. Members stay, names stay.
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# Protobuf: drop generated fields nothing reads (update_metadata.proto is the only schema).
+-shrinkunusedprotofields
+
+# Commons-compress: zstd is an optional dependency that is not on the classpath.
+-dontwarn com.github.luben.zstd.**

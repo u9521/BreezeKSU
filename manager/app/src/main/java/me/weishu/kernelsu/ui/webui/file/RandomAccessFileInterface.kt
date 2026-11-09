@@ -6,11 +6,12 @@ import android.webkit.JavascriptInterface
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import java.util.concurrent.ConcurrentHashMap
 
+@Suppress("unused")
 class RandomAccessFileInterface {
     companion object {
         private const val MAX_OPEN_FILES = 30
     }
-    
+
     private val openFiles = ConcurrentHashMap<String, SuRandomAccessFile>()
 
     @JavascriptInterface

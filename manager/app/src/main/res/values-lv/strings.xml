@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="profile_umount_modules_summary">Iespējojot šo opciju, KernelSU varēs atjaunot visus moduļos šīs lietojumprogrammas modificētos failus.</string>
-    <string name="failed_to_update_sepolicy">Neizdevās atjaunināt SELinux noteikumus: %s</string>
     <string name="settings_profile_template_summary">Pārvaldiet vietējo un tiešsaistes lietotņu profila veidni</string>
     <string name="app_profile_template_id_invalid">Nederīgs veidnes id</string>
     <string name="app_profile_template_id_exist">veidnes id jau pastāv!</string>
@@ -59,8 +58,6 @@
     <string name="failed_to_update_app_profile">Neizdevās atjaunināt lietotnes profilu %s</string>
     <string name="settings_umount_modules_default">Pēc noklusējuma atvienot moduļus</string>
     <string name="settings_umount_modules_default_summary">Globālā noklusējuma vērtība vienumam “Atvienot moduļus” lietotņu profilos. Ja tas ir iespējots, lietojumprogrammām, kurām nav iestatīts profils, tiks noņemtas visas sistēmas moduļu modifikācijas.</string>
-    <string name="profile_selinux_domain">Domēns</string>
-    <string name="profile_selinux_rules">Noteikumi</string>
     <string name="module_update">Atjaunināt</string>
     <string name="module_downloading">Lejupielādē moduli: %s</string>
     <string name="module_start_downloading">Sākt lejupielādi: %s</string>
@@ -102,11 +99,6 @@
     <string name="install_next">Nākamais</string>
     <string name="profile_namespace_inherited">Mantots</string>
     <string name="select_file">Izvēlieties failu un ielāpiet to</string>
-    <string name="download_file">Lejupielādējiet failu un ielāpiet to</string>
-    <string name="download_dialog_title">Ievadiet attēla URL</string>
-    <string name="download_dialog_msg">Pilns OTA attēls vai rūpnīcas attēls</string>
-    <string name="download_no_boot_partition">Attēlā nav atrasts boot, init_boot vai vendor_boot nodalījums</string>
-    <string name="download_probe_failed">Neizdevās pārbaudīt attēlu: %1$s</string>
     <string name="install_inactive_slot">Instalēt neaktīvajā slotā (pēc OTA)</string>
     <string name="install_inactive_slot_warning">Pēc restartēšanas jūsu ierīce tiks **PIESPIESTI** palaista pašreizējā neaktīvajā slotā!
 \nIzmantojiet šo opciju tikai pēc OTA pabeigšanas

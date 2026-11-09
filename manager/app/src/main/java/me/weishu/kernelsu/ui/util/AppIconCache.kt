@@ -7,6 +7,7 @@ import android.os.Process
 import android.os.UserManager
 import android.util.Log
 import android.util.LruCache
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -14,12 +15,10 @@ import kotlinx.coroutines.withContext
 import me.weishu.kernelsu.ui.util.AppIconCache.getMainUserId
 import me.zhanghai.android.appiconloader.AppIconLoader
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Remap the uid to the non-profile user possible to avoid SecurityException
- * when loading icons for cross-profileGroup apps.
- * See: https://github.com/zhanghai/AppIconLoader/issues/3
+ * Remaps the uid to the non-profile user, which avoids a SecurityException when loading
+ * icons for cross-profileGroup apps. See zhanghai/AppIconLoader issue 3.
  */
 fun ApplicationInfo.withMainUserUid(context: Context): ApplicationInfo {
     val mainUserId = getMainUserId(context)
@@ -75,7 +74,8 @@ object AppIconCache {
             var foundMainUserId = userId(Process.myUid())
             try {
                 HiddenApiBypass.addHiddenApiExemptions("Landroid/os/UserManager;->hasBadge(I)Z")
-                val hasBadgeMethod = UserManager::class.java.getMethod("hasBadge", Int::class.javaPrimitiveType)
+                val hasBadgeMethod =
+                    UserManager::class.java.getMethod("hasBadge", Int::class.javaPrimitiveType)
                 for (profile in profiles) {
                     val id = profile.hashCode()
                     val hasBadge = hasBadgeMethod.invoke(um, id) as Boolean
@@ -105,7 +105,11 @@ object AppIconCache {
      * Load icon bitmap using AppIconLoader with cross-profile fallback.
      * Called on IO thread, returns a software bitmap.
      */
-    private fun loadIconBitmap(context: Context, applicationInfo: ApplicationInfo, size: Int): Bitmap {
+    private fun loadIconBitmap(
+        context: Context,
+        applicationInfo: ApplicationInfo,
+        size: Int
+    ): Bitmap {
         val loader = iconLoaders.getOrPut(size) {
             AppIconLoader(size, false, context.applicationContext)
         }
@@ -116,7 +120,10 @@ object AppIconCache {
             try {
                 loader.loadIcon(applicationInfo)
             } catch (_: SecurityException) {
-                Log.d(TAG, "SecurityException loading icon for userId ${userId(applicationInfo.uid)}, retrying with main user uid")
+                Log.d(
+                    TAG,
+                    "SecurityException loading icon for userId ${userId(applicationInfo.uid)}, retrying with main user uid"
+                )
                 markOtherProfileGroupUser(applicationInfo.uid)
                 loader.loadIcon(applicationInfo.withMainUserUid(context))
             }

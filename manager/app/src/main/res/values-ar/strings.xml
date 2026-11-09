@@ -68,10 +68,7 @@
     <string name="settings_umount_modules_default">الغاء تحميل الإضافات بشكل افتراضي</string>
     <string name="settings_umount_modules_default_summary">القيمة الافتراضية العامة لـ\"إلغاء تحميل الإضافات\" في ملفات تعريف التطبيقات. إذا تم تمكينه، إزالة جميع تعديلات الإضافات على النظام للتطبيقات التي لا تحتوي على مجموعة ملف تعريف.</string>
     <string name="profile_umount_modules_summary">سيسمح تمكين هذا الخيار لـKernelSU باستعادة أي ملفات معدلة بواسطة الإضافات لهذا التطبيق.</string>
-    <string name="profile_selinux_domain">المجال</string>
-    <string name="profile_selinux_rules">القواعد</string>
     <string name="restart_app">إعادة تشغيل التطبيق</string>
-    <string name="failed_to_update_sepolicy">فشل تحديث قواعد SELinux لـ %s</string>
     <string name="profile_name">اسم الملف الشخصي</string>
     <string name="home_lkm_update_available">يتوفر إصدار أحدث من LKM المضمّن. اضغط للتحديث.</string>
     <string name="home_lkm_custom">مُخصّص</string>
@@ -106,11 +103,6 @@
     <string name="enable_web_debugging_summary">يمكن استخدامه لتصحيح أخطاء WebUI، يرجى تمكينه فقط عند الحاجة.</string>
     <string name="install_next">التالي</string>
     <string name="select_file">اختيار ملف وتصحيحه</string>
-    <string name="download_file">تنزيل ملف وتصحيحه</string>
-    <string name="download_dialog_title">أدخل رابط الملف</string>
-    <string name="download_dialog_msg">ملف OTA كاملة أو ملف المصنع</string>
-    <string name="download_no_boot_partition">لم يتم العثور على قسم boot أو init_boot أو vendor_boot في الصورة</string>
-    <string name="download_probe_failed">فشل فحص الصورة: %1$s</string>
     <string name="direct_install">تثبيت مباشر (موصى به)</string>
     <string name="install_inactive_slot">التثبيت على فتحة غير نشطة (بعد OTA)</string>
     <string name="install_inactive_slot_warning">سيتم **إجبار** جهازك على التمهيد إلى الفتحة غير النشطة الحالية بعد إعادة التشغيل!

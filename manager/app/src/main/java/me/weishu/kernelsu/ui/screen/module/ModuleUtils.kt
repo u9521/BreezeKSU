@@ -21,7 +21,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import me.weishu.kernelsu.ui.util.module.Shortcut
 import kotlin.math.roundToInt
 
 enum class ShortcutType {
@@ -142,17 +141,20 @@ fun ExpandableDescriptionText(
         }
 
         if (!canExpandNow) {
-            val width = collapsedPlaceable.width.coerceIn(constraints.minWidth, constraints.maxWidth)
+            val width =
+                collapsedPlaceable.width.coerceIn(constraints.minWidth, constraints.maxWidth)
             val height = collapsedHeight.coerceIn(constraints.minHeight, constraints.maxHeight)
             layout(width, height) {
                 collapsedPlaceable.place(0, 0)
             }
         } else {
             val currentProgress = progress.value
-            val currentHeight = (collapsedHeight + (expandedHeight - collapsedHeight) * currentProgress)
-                .roundToInt()
-                .coerceIn(constraints.minHeight, constraints.maxHeight)
-            val placeableToUse = if (currentProgress == 0f) collapsedPlaceable else expandedPlaceable
+            val currentHeight =
+                (collapsedHeight + (expandedHeight - collapsedHeight) * currentProgress)
+                    .roundToInt()
+                    .coerceIn(constraints.minHeight, constraints.maxHeight)
+            val placeableToUse =
+                if (currentProgress == 0f) collapsedPlaceable else expandedPlaceable
             val width = placeableToUse.width.coerceIn(constraints.minWidth, constraints.maxWidth)
 
             layout(width, currentHeight) {

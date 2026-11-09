@@ -17,6 +17,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.Window
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.pm.PackageInfoCompat
@@ -32,23 +33,50 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import me.weishu.kernelsu.R
-import me.weishu.kernelsu.ui.util.DownloadManager
-import me.weishu.kernelsu.ui.util.DownloadService
-import me.weishu.kernelsu.ui.util.createRootShell
-import me.weishu.kernelsu.ui.util.listModules
-import me.weishu.kernelsu.ui.util.resolveDownloadMimeType
-import me.weishu.kernelsu.ui.util.withNewRootShell
+import me.weishu.kernelsu.data.service.DownloadManager
+import me.weishu.kernelsu.data.service.DownloadService
+import me.weishu.kernelsu.data.ksu.createRootShell
+import me.weishu.kernelsu.data.ksu.listModules
+import me.weishu.kernelsu.data.service.resolveDownloadMimeType
+import me.weishu.kernelsu.data.ksu.withNewRootShell
 import me.weishu.kernelsu.ui.webui.file.KsuIO
 import me.weishu.kernelsu.ui.webui.pm.KsuPm
+import me.weishu.kernelsu.ui.webui.viewmodel.WebUIViewModel
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
-class WebViewInterface(private val state: WebUIState) {
-    private val webView get() = state.webView
-    private val modDir get() = state.modDir
+/**
+ * The `ksu` object a module page sees.
+ *
+ * Every method is reached from JavaScript through `@JavascriptInterface`, so Kotlin reports
+ * them as unused - one suppression on the class covers all of them.
+ */
+@Suppress("unused")
+class WebViewInterface(
+    private val runtime: WebUIRuntime,
+    private val modDir: String,
+    private val viewModel: WebUIViewModel,
+) {
+    /**
+     * Runs [action] on the main thread against the current WebView. The JS interfaces are
+     * called from WebView's own bridge thread, so every touch of the view has to hop.
+     */
+    private fun onWebView(action: (WebView) -> Unit) {
+        Handler(Looper.getMainLooper()).post {
+            runtime.webView?.let(action)
+        }
+    }
+
+    /**
+     * Evaluates [js] in the page. `evaluateJavascript` rather than `loadUrl("javascript:...")`,
+     * which treats the payload as a navigation and is rate limited.
+     */
+    private fun evaluateJs(js: String) {
+        onWebView { webView -> webView.evaluateJavascript(js, null) }
+    }
 
     @JavascriptInterface
     fun exec(cmd: String): String {
@@ -91,15 +119,11 @@ class WebViewInterface(private val state: WebUIState) {
         val stdout = result.out.joinToString(separator = "\n")
         val stderr = result.err.joinToString(separator = "\n")
 
-        val jsCode =
-            "javascript: (function() { try { ${callbackFunc}(${result.code}, ${
-                JSONObject.quote(
-                    stdout
-                )
+        evaluateJs(
+            "(function() { try { ${callbackFunc}(${result.code}, ${
+                JSONObject.quote(stdout)
             }, ${JSONObject.quote(stderr)}); } catch(e) { console.error(e); } })();"
-        webView?.post {
-            webView?.loadUrl(jsCode)
-        }
+        )
     }
 
     @JavascriptInterface
@@ -119,17 +143,15 @@ class WebViewInterface(private val state: WebUIState) {
         }
 
         val shell = createRootShell(true)
+        // Registered so runtime.dispose() can close a shell whose page went away mid-command.
+        runtime.registerShell(shell)
 
         val emitData = fun(name: String, data: String) {
-            val jsCode =
-                "javascript: (function() { try { ${callbackFunc}.${name}.emit('data', ${
-                    JSONObject.quote(
-                        data
-                    )
+            evaluateJs(
+                "(function() { try { ${callbackFunc}.${name}.emit('data', ${
+                    JSONObject.quote(data)
                 }); } catch(e) { console.error('emitData', e); } })();"
-            webView?.post {
-                webView?.loadUrl(jsCode)
-            }
+            )
         }
 
         val stdout = object : CallbackList<String>(UiThreadHandler::runAndWait) {
@@ -150,42 +172,33 @@ class WebViewInterface(private val state: WebUIState) {
         }
 
         completableFuture.thenAccept { result ->
-            val emitExitCode =
-                $$"javascript: (function() { try { $${callbackFunc}.emit('exit', $${result.code}); } catch(e) { console.error(`emitExit error: ${e}`); } })();"
-            webView?.post {
-                webView?.loadUrl(emitExitCode)
-            }
+            evaluateJs(
+                $$"(function() { try { $${callbackFunc}.emit('exit', $${result.code}); } catch(e) { console.error(`emitExit error: ${e}`); } })();"
+            )
 
             if (result.code != 0) {
-                val emitErrCode =
-                    "javascript: (function() { try { var err = new Error(); err.exitCode = ${result.code}; err.message = ${
-                        JSONObject.quote(
-                            result.err.joinToString(
-                                "\n"
-                            )
-                        )
+                evaluateJs(
+                    "(function() { try { var err = new Error(); err.exitCode = ${result.code}; err.message = ${
+                        JSONObject.quote(result.err.joinToString("\n"))
                     };${callbackFunc}.emit('error', err); } catch(e) { console.error('emitErr', e); } })();"
-                webView?.post {
-                    webView?.loadUrl(emitErrCode)
-                }
+                )
             }
         }.whenComplete { _, _ ->
+            runtime.unregisterShell(shell)
             runCatching { shell.close() }
         }
     }
 
     @JavascriptInterface
     fun toast(msg: String) {
-        webView?.post {
-            webView?.let { Toast.makeText(it.context, msg, Toast.LENGTH_SHORT).show() }
-        }
+        viewModel.toast(msg)
     }
 
     @JavascriptInterface
     fun fullScreen(enable: Boolean) {
-        val context = webView?.context
-        if (context is Activity) {
-            Handler(Looper.getMainLooper()).post {
+        onWebView { webView ->
+            val context = webView.context
+            if (context is Activity) {
                 if (enable) {
                     hideSystemUI(context.window)
                 } else {
@@ -198,7 +211,7 @@ class WebViewInterface(private val state: WebUIState) {
 
     @JavascriptInterface
     fun enableEdgeToEdge(enable: Boolean = true) {
-        state.isInsetsEnabled = enable
+        viewModel.onEdgeToEdgeChanged(enable)
     }
 
     @JavascriptInterface
@@ -263,7 +276,9 @@ class WebViewInterface(private val state: WebUIState) {
                 obj.put("versionName", pkg.versionName ?: "")
                 obj.put("versionCode", PackageInfoCompat.getLongVersionCode(pkg))
                 obj.put("appLabel", appInfo.label)
-                obj.put("isSystem", app?.let { (it.flags and ApplicationInfo.FLAG_SYSTEM) != 0 } ?: JSONObject.NULL)
+                obj.put(
+                    "isSystem",
+                    app?.let { (it.flags and ApplicationInfo.FLAG_SYSTEM) != 0 } ?: JSONObject.NULL)
                 obj.put("uid", app?.uid ?: JSONObject.NULL)
                 jsonArray.put(obj)
             } else {
@@ -278,23 +293,32 @@ class WebViewInterface(private val state: WebUIState) {
 
     @JavascriptInterface
     fun exit() {
-        state.requestExit()
+        viewModel.exit()
     }
 
+    // One per window, not a process-wide object: two module pages can be open at once and
+    // closing one used to close the other's open file handles.
+    private val ksuIO = KsuIO()
+
     @JavascriptInterface
-    fun io() = KsuIO
+    fun io() = ksuIO
 
     @JavascriptInterface
     fun pm() = KsuPm
 
     fun destroy() {
-        KsuIO.destroy()
+        ksuIO.destroy()
     }
 }
 
-class WebUIDownloadInterface(private val state: WebUIState) {
+/** The `ksu_download` object: reached from JavaScript, hence the same suppression as above. */
+@Suppress("unused")
+class WebUIDownloadInterface(private val runtime: WebUIRuntime) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val webView get() = state.webView
+    private val webView get() = runtime.webView
+
+    // This window's blob downloads; another module's page must not be able to clean these up.
+    private val blobs get() = runtime.blobs
 
     companion object {
         // Use a different notification ID range to avoid collision with DownloadService
@@ -327,13 +351,17 @@ class WebUIDownloadInterface(private val state: WebUIState) {
         )
 
         ensureNotificationChannel(notificationManager, context)
-        notificationManager.notify(WEBUI_NOTIFICATION_ID_BASE + downloadId, buildProgressNotification(context, displayName, 0))
+        notificationManager.notify(
+            WEBUI_NOTIFICATION_ID_BASE + downloadId,
+            buildProgressNotification(context, displayName, 0)
+        )
 
         scope.launch {
             var pendingUri: Uri? = null
             val savedUri = try {
                 val decoded = Base64.decode(base64, Base64.DEFAULT)
-                val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                val collection =
+                    MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
                 val values = android.content.ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
                     put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
@@ -376,8 +404,16 @@ class WebUIDownloadInterface(private val state: WebUIState) {
                 pendingUri?.let { context.contentResolver.delete(it, null, null) }
                 Log.e("WebUIDownload", "Failed to save $displayName", throwable)
                 DownloadManager.markFailed(downloadId, throwable.message ?: "Unknown error")
-                notificationManager.notify(WEBUI_NOTIFICATION_ID_BASE + downloadId, buildFailureNotification(context, displayName))
-                postToast(currentWebView.context.getString(R.string.download_failed_content, displayName))
+                notificationManager.notify(
+                    WEBUI_NOTIFICATION_ID_BASE + downloadId,
+                    buildFailureNotification(context, displayName)
+                )
+                postToast(
+                    currentWebView.context.getString(
+                        R.string.download_failed_content,
+                        displayName
+                    )
+                )
                 null
             }
 
@@ -385,9 +421,20 @@ class WebUIDownloadInterface(private val state: WebUIState) {
                 DownloadManager.markCompleted(downloadId, savedUri)
                 notificationManager.notify(
                     WEBUI_NOTIFICATION_ID_BASE + downloadId,
-                    buildCompletionNotification(context, downloadId, displayName, savedUri, mimeType)
+                    buildCompletionNotification(
+                        context,
+                        downloadId,
+                        displayName,
+                        savedUri,
+                        mimeType
+                    )
                 )
-                postToast(currentWebView.context.getString(R.string.download_complete_content, displayName))
+                postToast(
+                    currentWebView.context.getString(
+                        R.string.download_complete_content,
+                        displayName
+                    )
+                )
             }
         }
     }
@@ -397,7 +444,7 @@ class WebUIDownloadInterface(private val state: WebUIState) {
         val currentWebView = webView ?: return ""
         val sanitizedFileName = sanitizeWebUIDownloadFileName(fileName)
         return runCatching {
-            BlobDownloadHandler.registerBlobDownload(
+            blobs.registerBlobDownload(
                 sanitizedFileName,
                 mimeType,
                 currentWebView.context.cacheDir,
@@ -410,22 +457,22 @@ class WebUIDownloadInterface(private val state: WebUIState) {
 
     @JavascriptInterface
     fun writeDownloadChunk(downloadId: String, base64Chunk: String): Boolean {
-        return BlobDownloadHandler.writeChunk(downloadId, base64Chunk)
+        return blobs.writeChunk(downloadId, base64Chunk)
     }
 
     @JavascriptInterface
     fun completeChunkedDownload(downloadId: String): Boolean {
-        return BlobDownloadHandler.completeDownload(downloadId)
+        return blobs.completeDownload(downloadId)
     }
 
     @JavascriptInterface
     fun cancelChunkedDownload(downloadId: String) {
-        BlobDownloadHandler.cancelDownload(downloadId)
+        blobs.cancelDownload(downloadId)
     }
 
     fun destroy() {
         scope.cancel()
-        BlobDownloadHandler.cleanup()
+        blobs.cleanup()
     }
 
     private fun postToast(message: String) {
@@ -436,7 +483,10 @@ class WebUIDownloadInterface(private val state: WebUIState) {
         }
     }
 
-    private fun ensureNotificationChannel(notificationManager: NotificationManager, context: Context) {
+    private fun ensureNotificationChannel(
+        notificationManager: NotificationManager,
+        context: Context
+    ) {
         notificationManager.createNotificationChannel(
             NotificationChannel(
                 DownloadService.CHANNEL_ID,
@@ -487,7 +537,11 @@ class WebUIDownloadInterface(private val state: WebUIState) {
             .setSmallIcon(android.R.drawable.stat_sys_download_done)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .addAction(android.R.drawable.ic_menu_view, context.getString(R.string.open), pendingIntent)
+            .addAction(
+                android.R.drawable.ic_menu_view,
+                context.getString(R.string.open),
+                pendingIntent
+            )
             .build()
     }
 
@@ -505,8 +559,12 @@ class WebUIDownloadInterface(private val state: WebUIState) {
 fun hideSystemUI(window: Window) =
     WindowInsetsControllerCompat(window, window.decorView).let { controller ->
         controller.hide(WindowInsetsCompat.Type.systemBars())
-        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
 fun showSystemUI(window: Window) =
-    WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+    WindowInsetsControllerCompat(
+        window,
+        window.decorView
+    ).show(WindowInsetsCompat.Type.systemBars())

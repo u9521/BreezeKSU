@@ -68,15 +68,12 @@
     <string name="safe_mode">Chế độ An toàn</string>
     <string name="reboot_to_apply">Khởi động lại để có hiệu lực</string>
     <string name="home_learn_kernelsu_url">https://kernelsu.org/guide/what-is-kernelsu.html</string>
-    <string name="profile_selinux_domain">Tên miền</string>
-    <string name="profile_selinux_rules">Quy tắc</string>
     <string name="recently_installed">Mới vừa cài đặt</string>
     <string name="launch_app">Khởi chạy</string>
     <string name="restart_app">Khởi động lại</string>
     <string name="profile_namespace">Không gian tên</string>
     <string name="profile_capabilities">Tính tương thích</string>
     <string name="profile_flags">Flags</string>
-    <string name="failed_to_update_sepolicy">Cập nhật quy tắc SELinux cho %s thất bại!</string>
     <string name="force_stop_app">Buộc dừng</string>
     <string name="profile_namespace_inherited">Thừa hưởng</string>
     <string name="profile_namespace_global">Toàn cục</string>
@@ -122,11 +119,6 @@
     <string name="install_next">Kế tiếp</string>
     <string name="direct_install">Cài đặt trực tiếp (Khuyến nghị)</string>
     <string name="select_file">Chọn và vá file</string>
-    <string name="download_file">Tải xuống và vá file</string>
-    <string name="download_dialog_title">Nhập URL file .img</string>
-    <string name="download_dialog_msg">File .img OTA đầy đủ hoặc file .img nguyên gốc</string>
-    <string name="download_no_boot_partition">Không tìm thấy phân vùng boot, init_boot hoặc vendor_boot trong file .img</string>
-    <string name="download_probe_failed">Kiểm tra file .img thất bại!: %1$s</string>
     <string name="settings_uninstall">Gỡ cài đặt</string>
     <string name="settings_uninstall_temporary">Gỡ cài đặt tạm thời</string>
     <string name="settings_uninstall_permanent">Gỡ cài đặt vĩnh viễn</string>
@@ -226,8 +218,6 @@
     <string name="color_sakura">Hoa anh đào</string>
     <string name="reboot_soft">Khởi động lại mềm</string>
     <string name="jailbreak_mode">Chế độ Jailbreak</string>
-    <string name="home_jailbreak">Jailbreak</string>
-    <string name="jailbreak_timeout">Jailbreak thất bại! Vui lòng kiểm tra nhật ký!</string>
     <string name="jailbreak_reboot_warning">Bạn đang ở chế độ Jailbreak. Khởi động lại sẽ làm mất quyền truy cập root, và bạn sẽ phải jailbreak lại sau khi thiết bị khởi động. Bạn có muốn khởi động lại không?</string>
     <string name="settings_enable_predictive_back">Cử chỉ quay lại dự đoán</string>
     <string name="settings_enable_predictive_back_summary">Kích hoạt tính năng hỗ trợ cử chỉ quay lại dự đoán.</string>
@@ -249,8 +239,6 @@
     <string name="settings_enable_glass">Liquid Glass</string>
     <string name="settings_enable_glass_summary">Kích hoạt hiệu ứng Liquid Glass cho thanh điều hướng nổi.</string>
     <string name="show_only_primary_user_apps">Không hiển thị các ứng dụng nhân bản</string>
-    <string name="settings_auto_jailbreak">Tự động Jailbreak</string>
-    <string name="settings_auto_jailbreak_summary">Tự động sử dụng Magica để nâng cao quyền hạn khi phát hiện SELinux ở chế độ Permissive lúc khởi động. Yêu cầu cấp quyền tự khởi động cho ứng dụng này.</string>
     <string name="settings_soft_reboot">Khởi động lại mềm thay vì khởi động lại toàn bộ</string>
     <string name="settings_soft_reboot_summary">Sử dụng khởi động lại mềm thay vì khởi động lại toàn bộ khi cài đặt, cập nhật hoặc bật/tắt các module.</string>
     <string name="allow_shell">Luôn cấp quyền Root cho Shell</string>
