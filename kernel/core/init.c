@@ -28,7 +28,6 @@
 #include "feature/module_blacklist.h"
 #include "feature/shell_su_adb_only.h"
 #include "infra/symbol_resolver.h"
-#include "preinit/preinit.h"
 
 #if defined(__x86_64__) && !defined(CONFIG_KSU_X86_PATCH_SYSCALL_DISPATCHER)
 #include <asm/cpufeature.h>
@@ -202,8 +201,6 @@ int __init kernelsu_init(void)
 
         ksu_ksud_init();
 
-        ksu_preinit_init();
-
         ksu_file_wrapper_init();
     }
 
@@ -224,7 +221,6 @@ void __exit kernelsu_exit(void)
 
     if (!ksu_late_loaded) {
         ksu_ksud_exit();
-        ksu_preinit_exit();
     }
 
     // Wait for any in-flight RCU readers (e.g. handler traversing allow_list)
