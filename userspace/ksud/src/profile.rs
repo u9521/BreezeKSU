@@ -1,20 +1,20 @@
+use crate::defs;
 use crate::utils::ensure_dir_exists;
-use crate::{defs, sepolicy};
-use anyhow::{Context, Result};
+use anyhow::Result;
 use std::path::Path;
 
-pub fn set_sepolicy(pkg: String, policy: String) -> Result<()> {
-    ensure_dir_exists(defs::PROFILE_SELINUX_DIR)?;
-    let policy_file = Path::new(defs::PROFILE_SELINUX_DIR).join(pkg);
-    std::fs::write(&policy_file, policy)?;
-    sepolicy::apply_file(&policy_file)?;
+/// Per-app SELinux rules are gone from the fork: nothing reads the per-app policy files any
+/// more. The subcommand keeps its shape, and its `Result`, so a caller that still invokes it
+/// exits 0 instead of failing. Module `sepolicy.rule` files are a different path and still load.
+#[allow(clippy::unnecessary_wraps)]
+pub fn set_sepolicy(_pkg: String, _policy: String) -> Result<()> {
     Ok(())
 }
 
-pub fn get_sepolicy(pkg: String) -> Result<()> {
-    let policy_file = Path::new(defs::PROFILE_SELINUX_DIR).join(pkg);
-    let policy = std::fs::read_to_string(policy_file)?;
-    println!("{policy}");
+/// The read side of the same no-op. It prints nothing rather than failing, so
+/// `profile get-sepolicy <pkg>` yields an empty string.
+#[allow(clippy::unnecessary_wraps)]
+pub fn get_sepolicy(_pkg: String) -> Result<()> {
     Ok(())
 }
 
@@ -54,26 +54,9 @@ pub fn list_templates() -> Result<()> {
     Ok(())
 }
 
-pub fn apply_sepolies() -> Result<()> {
-    let path = Path::new(defs::PROFILE_SELINUX_DIR);
-    if !path.exists() {
-        log::info!("profile sepolicy dir not exists.");
-        return Ok(());
-    }
-
-    let sepolicies =
-        std::fs::read_dir(path).with_context(|| "profile sepolicy dir open failed.".to_string())?;
-    for sepolicy in sepolicies {
-        let Ok(sepolicy) = sepolicy else {
-            log::info!("profile sepolicy dir read failed.");
-            continue;
-        };
-        let sepolicy = sepolicy.path();
-        if sepolicy::apply_file(&sepolicy).is_ok() {
-            log::info!("profile sepolicy applied: {}", sepolicy.display());
-        } else {
-            log::info!("profile sepolicy apply failed: {}", sepolicy.display());
-        }
-    }
+/// A no-op under its original name, so the two boot-stage call sites next to
+/// `module::load_sepolicy_rule()` do not move. That different path still has to run.
+#[allow(clippy::unnecessary_wraps)]
+pub const fn apply_sepolies() -> Result<()> {
     Ok(())
 }

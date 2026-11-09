@@ -1,10 +1,7 @@
 //! Hot install: make a freshly installed module live without a reboot.
 //!
 //! A module opts in from customize.sh with `MODULE_HOT_INSTALL_REQUEST=true` (and optionally
-//! `MODULE_HOT_RUN_SCRIPT=<script>`). installer.sh records the request in a marker file inside
-//! the staged module dir; after the install script succeeds ksud moves the staged dir over the
-//! live one, applies sepolicy.rule and runs the requested script. Anything that only happens at
-//! boot (mounting system/, system.prop, post-fs-data.sh, ...) still waits for the next boot.
+//! `MODULE_HOT_RUN_SCRIPT=<script>`). Anything that only happens at boot still waits for it.
 
 use crate::{
     assets, defs,
@@ -151,7 +148,7 @@ pub fn apply(module_id: &str, is_metamodule: bool, request: &Request) -> bool {
     }
 
     if live_dir.join(defs::MODULE_PREINIT_DIR).is_dir() {
-        println!("- Note: preinit actions run from the next boot");
+        println!("- Warning: this module ships a preinit/ dir, which BreezeKSU ignores");
     }
 
     if let Some(script) = run_script {
